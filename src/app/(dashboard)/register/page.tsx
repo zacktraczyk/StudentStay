@@ -6,12 +6,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 import logo from "../../../../public/logo.svg";
-import { useRouter } from "next/navigation";
-import CheckEmailModal from "./checkemailmodal";
+import CheckEmailModal from "./check-email-modal";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const supabase = createClientComponentClient();
 
   const [openModal, setOpenModal] = useState(false);
@@ -19,6 +19,10 @@ export default function Login() {
   const handleRegister = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     try {
+      if (password != passwordConfirm) {
+        alert("passwords do not match");
+        throw "passwords do not match";
+      }
       const { error: AuthError } = await supabase.auth.signUp({
         email,
         password,
@@ -58,7 +62,7 @@ export default function Login() {
                   href="/login"
                   className="font-semibold text-green-800 hover:text-green-700"
                 >
-                  login
+                  Login
                 </Link>
               </p>
             </div>
@@ -120,8 +124,8 @@ export default function Login() {
                         id="password"
                         name="password"
                         type="password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        value={password}
+                        onChange={(e) => setPasswordConfirm(e.target.value)}
+                        value={passwordConfirm}
                         autoComplete="current-password"
                         required
                         className="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6"

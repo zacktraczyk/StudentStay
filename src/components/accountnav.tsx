@@ -5,10 +5,9 @@ import {
   FingerPrintIcon,
   UserCircleIcon,
   UsersIcon,
-  XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-function classNames(...classes) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 

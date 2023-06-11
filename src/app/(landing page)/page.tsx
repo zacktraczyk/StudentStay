@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="bg-white">
@@ -62,12 +64,12 @@ export default function Home() {
                     students, providing a comprehensive selection of options.
                   </p>
                   <div className="mt-10 flex items-center gap-x-6">
-                    <a
-                      href="#"
+                    <Link
+                      href="/register"
                       className="rounded-md bg-green-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       Get started
-                    </a>
+                    </Link>
                     <a
                       href="#"
                       className="text-sm font-semibold leading-6 text-gray-900"
