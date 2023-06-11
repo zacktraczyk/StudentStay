@@ -61,12 +61,12 @@ export default function Login() {
             </h2>
             <p className="mt-2 text-sm leading-6 text-gray-500">
               Not a member?{" "}
-              <a
-                href="#"
+              <Link
+                href="/register"
                 className="font-semibold text-green-800 hover:text-green-700"
               >
-                Start a 14 day free trial
-              </a>
+                Create an account
+              </Link>
             </p>
           </div>
 
