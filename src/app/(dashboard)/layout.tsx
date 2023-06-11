@@ -1,8 +1,6 @@
-import "./globals.css";
+import "../globals.css";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import Footer from "@/components/footer";
-import Header from "@/components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,13 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      {/* <body className={inter.className}>{children}</body> */}
-      <body>
-        <Header />
-        {children}
-        <Footer />
-      </body>
+    <html lang="en" className="h-full">
+      <body className={inter.className + " h-full"}>{children}</body>
       <Analytics />
     </html>
   );
