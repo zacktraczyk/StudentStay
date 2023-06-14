@@ -14,16 +14,6 @@ export default function Login() {
   const supabase = createClientComponentClient();
   const router = useRouter();
 
-  const handleSignUp = async () => {
-    await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${location.origin}/auth/callback`,
-      },
-    });
-  };
-
   const handleLogin = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
