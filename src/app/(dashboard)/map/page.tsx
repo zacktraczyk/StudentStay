@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import { FeatureCollection, Geometry, GeoJsonProperties } from "geojson";
 import Map, { Layer, Source } from "react-map-gl";
@@ -10,36 +10,6 @@ import { supabase } from "@/lib/supabaseClient";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
-const geojson: FeatureCollection<Geometry, GeoJsonProperties> = {
-  type: "FeatureCollection" as "FeatureCollection",
-  features: [
-    {
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [-122.03371, 36.96719],
-      },
-      properties: {
-        name: "142 Walti",
-      },
-    },
-  ],
-};
-
-const layerStyle = {
-  id: "listing-points",
-  type: "circle" as "circle",
-  paint: {
-    "circle-radius": 10,
-    "circle-color": [
-      "case",
-      ["boolean", ["feature-state", "hover"], false],
-      "#007cbf",
-      "#000",
-    ],
-  },
-};
-
 function LocationCreate() {
   const [locationLabel, setLocationLabel] = useState("");
   const [longitude, setLongitude] = useState("");
@@ -48,15 +18,24 @@ function LocationCreate() {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const data = {
-      label: locationLabel,
-      coords: [longitude, latitude],
-    };
+    try {
+      const location_point = coordToPgisPoint([
+        parseFloat(longitude),
+        parseFloat(latitude),
+      ]);
 
-    console.log(data);
-    // const {error} = await supabase.from('listings').insert(
-    //   {}
-    // )
+      const data = {
+        label: locationLabel,
+        color: "pink",
+        location: location_point,
+      };
+
+      console.log(data);
+      const { error } = await supabase.from("listingsdemo").insert(data);
+      if (error) throw error;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -87,7 +66,7 @@ function LocationCreate() {
           <label className="block text-sm font-medium leading-6 text-gray-900">
             Coordinates
           </label>
-          <div className="flex gap-5 mt-2">
+          <div className="flex flex-col md:flex-row gap-5 mt-2">
             <input
               type="number"
               name="longitude"
@@ -122,45 +101,105 @@ function LocationCreate() {
   );
 }
 
-const listings = [
-  {
-    gid: "0",
-    label: "test",
-    color: "pink",
-    location: "POINT(-73.94581 40.807475)",
-  },
-];
+type listing = {
+  listingid: string;
+  label: string;
+  color: string;
+  location: string;
+};
 
-function Listings() {
+interface PropListings {
+  listings: FeatureCollection<Geometry, GeoJsonProperties>;
+}
+
+function Listings(props: PropListings) {
+  const { listings } = props;
+
   return (
     <div className="flex flex-col items-center gap-5">
       <h1>Listings</h1>
-      {listings.map((listing) => (
-        <div id={listing.gid} className="border-2 rounded-lg w-full p-3">
-          <p>GID: {listing.gid}</p>
-          <p>Label: {listing.label}</p>
-          <p>Color: {listing.color}</p>
-          <p>Location:</p>
-          <p>{listing.location}</p>
+      {listings.features.map((listing, i) => (
+        <div key={i} className="border-2 rounded-lg w-full p-3">
+          <p>{JSON.stringify(listing)}</p>
         </div>
       ))}
     </div>
   );
 }
 
-function SideMenu() {
+const pgisPointToCoord = (point: string) => {
+  if (!point || point.substring(0, 6) !== "POINT(") {
+    console.error("invalid PostGIS Point passed");
+  }
+
+  const coords_combined = point.substring(6, point.length - 1);
+  const coords = coords_combined.split(" ");
+
+  return [parseFloat(coords[0]), parseFloat(coords[1])];
+};
+
+const coordToPgisPoint = (coord: [number, number]) => {
+  return `POINT(${coord[0].toFixed(6)} ${coord[1].toFixed(6)})`;
+};
+
+interface PropSideMenu {
+  listings: FeatureCollection<Geometry, GeoJsonProperties> | undefined;
+}
+
+function SideMenu(props: PropSideMenu) {
+  const { listings } = props;
+
   return (
     <div className="p-10 md:p-0 md:w-60 flex flex-col items-stretch">
       <LocationCreate />
       <hr className="h-px bg-gray-200 border-0 my-8" />
       <div className="flex-grow h-fill">
-        <Listings />
+        {listings ? <Listings listings={listings} /> : <p>No listings</p>}
       </div>
     </div>
   );
 }
 
+const layerStyle = {
+  id: "listing-points",
+  type: "circle" as "circle",
+  paint: {
+    "circle-radius": 10,
+    "circle-color": [
+      "case",
+      ["boolean", ["feature-state", "hover"], false],
+      "#007cbf",
+      "#000",
+    ],
+  },
+};
+
 function MapTest() {
+  const [listings, setListings] =
+    useState<FeatureCollection<Geometry, GeoJsonProperties>>();
+
+  useEffect(() => {
+    const getListings = async () => {
+      const { data, error } = await supabase.rpc("nearby_listings_demo");
+      // const { data, error } = await supabase
+      //   .from("listings AS t")
+      //   .select(
+      //     "json_build_object('type', 'FeatureCollection', 'features', json_agg(ST_AsGeoJSON(t.*)::json))"
+      //   );
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      console.log(data[0].json_build_object);
+
+      setListings(data[0].json_build_object);
+    };
+
+    getListings();
+  }, []);
+
   // const onMapHover = React.useCallback(() => {
   //   mapRef.current.on("hover", () => {});
   // }, []);
@@ -175,7 +214,7 @@ function MapTest() {
   return (
     <div className="flex w-screen h-screen">
       <div className="w-2/3 h-full flex items-center justify-center">
-        <SideMenu />
+        <SideMenu listings={listings} />
       </div>
       <Map
         // onMouseEnter={onMapHover}
@@ -187,7 +226,7 @@ function MapTest() {
         }}
         mapStyle="mapbox://styles/mapbox/streets-v9"
       >
-        <Source id="locations" type="geojson" data={geojson}>
+        <Source id="locations" type="geojson" data={listings}>
           <Layer {...layerStyle} />
         </Source>
       </Map>
