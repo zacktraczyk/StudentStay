@@ -1,8 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import { FeatureCollection, Geometry, GeoJsonProperties } from "geojson";
+import mapboxgl, { Expression } from "mapbox-gl";
+import {
+  FeatureCollection,
+  Feature,
+  Geometry,
+  GeoJsonProperties,
+} from "geojson";
 import Map, { Layer, Source } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -14,20 +19,21 @@ function LocationCreate() {
   const [locationLabel, setLocationLabel] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
+  const [color, setColor] = useState("#000000");
 
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     try {
-      const location_point = coordToPgisPoint([
+      const locationPoint = coordToPgisPoint([
         parseFloat(longitude),
         parseFloat(latitude),
       ]);
 
       const data = {
         label: locationLabel,
-        color: "pink",
-        location: location_point,
+        color: color,
+        location: locationPoint,
       };
 
       console.log(data);
@@ -91,6 +97,24 @@ function LocationCreate() {
         </div>
       </div>
 
+      <div>
+        <label
+          htmlFor="colorpicker"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Color
+        </label>
+
+        <input
+          type="color"
+          name="colorpicker"
+          id="colorpicker"
+          className="block w-full border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
+        />
+      </div>
+
       <button
         type="submit"
         className="rounded-md bg-green-800 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800"
@@ -101,42 +125,45 @@ function LocationCreate() {
   );
 }
 
-type listing = {
-  listingid: string;
-  label: string;
-  color: string;
-  location: string;
-};
-
 interface PropListings {
-  listings: FeatureCollection<Geometry, GeoJsonProperties>;
+  listings: FeatureCollection<Geometry, GeoJsonProperties> | undefined;
 }
 
 function Listings(props: PropListings) {
   const { listings } = props;
 
   return (
-    <div className="flex flex-col items-center gap-5">
+    <div className="flex flex-col items-center gap-5 overflow-y-scroll">
       <h1>Listings</h1>
-      {listings.features.map((listing, i) => (
-        <div key={i} className="border-2 rounded-lg w-full p-3">
-          <p>{JSON.stringify(listing)}</p>
-        </div>
-      ))}
+      {listings &&
+        listings.features &&
+        listings.features.map((listing, i) => (
+          <Listing key={i} listing={listing} />
+        ))}
     </div>
   );
 }
 
-const pgisPointToCoord = (point: string) => {
-  if (!point || point.substring(0, 6) !== "POINT(") {
-    console.error("invalid PostGIS Point passed");
-  }
+interface PropListing {
+  listing: Feature<Geometry, GeoJsonProperties>;
+}
 
-  const coords_combined = point.substring(6, point.length - 1);
-  const coords = coords_combined.split(" ");
+function Listing(props: PropListing) {
+  const { listing } = props;
+  const listingid = listing.properties?.listingid || "";
+  const label = listing.properties?.label || "";
+  const color = listing.properties?.color || "";
 
-  return [parseFloat(coords[0]), parseFloat(coords[1])];
-};
+  return (
+    <div
+      className={`border-2 rounded-lg w-full p-3`}
+      style={{ borderColor: color }}
+    >
+      <p>ID: {listingid}</p>
+      <p>Label: {label}</p>
+    </div>
+  );
+}
 
 const coordToPgisPoint = (coord: [number, number]) => {
   return `POINT(${coord[0].toFixed(6)} ${coord[1].toFixed(6)})`;
@@ -153,9 +180,7 @@ function SideMenu(props: PropSideMenu) {
     <div className="p-10 md:p-0 md:w-60 flex flex-col items-stretch">
       <LocationCreate />
       <hr className="h-px bg-gray-200 border-0 my-8" />
-      <div className="flex-grow h-fill">
-        {listings ? <Listings listings={listings} /> : <p>No listings</p>}
-      </div>
+      <Listings listings={listings} />
     </div>
   );
 }
@@ -165,12 +190,7 @@ const layerStyle = {
   type: "circle" as "circle",
   paint: {
     "circle-radius": 10,
-    "circle-color": [
-      "case",
-      ["boolean", ["feature-state", "hover"], false],
-      "#007cbf",
-      "#000",
-    ],
+    "circle-color": ["get", "color"] as Expression,
   },
 };
 
@@ -181,18 +201,11 @@ function MapTest() {
   useEffect(() => {
     const getListings = async () => {
       const { data, error } = await supabase.rpc("nearby_listings_demo");
-      // const { data, error } = await supabase
-      //   .from("listings AS t")
-      //   .select(
-      //     "json_build_object('type', 'FeatureCollection', 'features', json_agg(ST_AsGeoJSON(t.*)::json))"
-      //   );
 
       if (error) {
         console.error(error);
         return;
       }
-
-      console.log(data[0].json_build_object);
 
       setListings(data[0].json_build_object);
     };
@@ -200,25 +213,12 @@ function MapTest() {
     getListings();
   }, []);
 
-  // const onMapHover = React.useCallback(() => {
-  //   mapRef.current.on("hover", () => {});
-  // }, []);
-
-  // const onMapLeave = React.useCallback(() => {
-  //   mapRef.current.on("mouseleave", () => {
-  //     HoverPointID = null;
-  //     map.getCanvas;
-  //   });
-  // }, []);
-
   return (
     <div className="flex w-screen h-screen">
       <div className="w-2/3 h-full flex items-center justify-center">
         <SideMenu listings={listings} />
       </div>
       <Map
-        // onMouseEnter={onMapHover}
-        // onMouseLeave={onMapLeave}
         initialViewState={{
           longitude: -122.033,
           latitude: 36.967,
@@ -226,9 +226,11 @@ function MapTest() {
         }}
         mapStyle="mapbox://styles/mapbox/streets-v9"
       >
-        <Source id="locations" type="geojson" data={listings}>
-          <Layer {...layerStyle} />
-        </Source>
+        {listings && (
+          <Source id="locations" type="geojson" data={listings}>
+            <Layer {...layerStyle} />
+          </Source>
+        )}
       </Map>
     </div>
   );
