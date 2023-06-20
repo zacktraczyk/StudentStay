@@ -1,21 +1,11 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import mapboxgl, { Expression } from "mapbox-gl";
-import {
-  FeatureCollection,
-  Feature,
-  Geometry,
-  GeoJsonProperties,
-} from "geojson";
-import Map, { Layer, Source } from "react-map-gl";
-
-import "mapbox-gl/dist/mapbox-gl.css";
 import { supabase } from "@/lib/supabaseClient";
+import { useState } from "react";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
+const coordToPgisPoint = (coord: [number, number]) => {
+  return `POINT(${coord[0].toFixed(6)} ${coord[1].toFixed(6)})`;
+};
 
-function LocationCreate() {
+export default function LocationCreate() {
   const [locationLabel, setLocationLabel] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -36,7 +26,6 @@ function LocationCreate() {
         location: locationPoint,
       };
 
-      console.log(data);
       const { error } = await supabase.from("listingsdemo").insert(data);
       if (error) throw error;
     } catch (error) {
@@ -124,116 +113,3 @@ function LocationCreate() {
     </form>
   );
 }
-
-interface PropListings {
-  listings: FeatureCollection<Geometry, GeoJsonProperties> | undefined;
-}
-
-function Listings(props: PropListings) {
-  const { listings } = props;
-
-  return (
-    <div className="flex flex-col items-center gap-5 overflow-y-scroll">
-      <h1>Listings</h1>
-      {listings &&
-        listings.features &&
-        listings.features.map((listing, i) => (
-          <Listing key={i} listing={listing} />
-        ))}
-    </div>
-  );
-}
-
-interface PropListing {
-  listing: Feature<Geometry, GeoJsonProperties>;
-}
-
-function Listing(props: PropListing) {
-  const { listing } = props;
-  const listingid = listing.properties?.listingid || "";
-  const label = listing.properties?.label || "";
-  const color = listing.properties?.color || "";
-
-  return (
-    <div
-      className={`border-2 rounded-lg w-full p-3`}
-      style={{ borderColor: color }}
-    >
-      <p>ID: {listingid}</p>
-      <p>Label: {label}</p>
-    </div>
-  );
-}
-
-const coordToPgisPoint = (coord: [number, number]) => {
-  return `POINT(${coord[0].toFixed(6)} ${coord[1].toFixed(6)})`;
-};
-
-interface PropSideMenu {
-  listings: FeatureCollection<Geometry, GeoJsonProperties> | undefined;
-}
-
-function SideMenu(props: PropSideMenu) {
-  const { listings } = props;
-
-  return (
-    <div className="p-10 md:p-0 md:w-60 flex flex-col items-stretch">
-      <LocationCreate />
-      <hr className="h-px bg-gray-200 border-0 my-8" />
-      <Listings listings={listings} />
-    </div>
-  );
-}
-
-const layerStyle = {
-  id: "listing-points",
-  type: "circle" as "circle",
-  paint: {
-    "circle-radius": 10,
-    "circle-color": ["get", "color"] as Expression,
-  },
-};
-
-function MapTest() {
-  const [listings, setListings] =
-    useState<FeatureCollection<Geometry, GeoJsonProperties>>();
-
-  useEffect(() => {
-    const getListings = async () => {
-      const { data, error } = await supabase.rpc("nearby_listings_demo");
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      setListings(data[0].json_build_object);
-    };
-
-    getListings();
-  }, []);
-
-  return (
-    <div className="flex w-screen h-screen">
-      <div className="w-2/3 h-full flex items-center justify-center">
-        <SideMenu listings={listings} />
-      </div>
-      <Map
-        initialViewState={{
-          longitude: -122.033,
-          latitude: 36.967,
-          zoom: 14,
-        }}
-        mapStyle="mapbox://styles/mapbox/streets-v9"
-      >
-        {listings && (
-          <Source id="locations" type="geojson" data={listings}>
-            <Layer {...layerStyle} />
-          </Source>
-        )}
-      </Map>
-    </div>
-  );
-}
-
-export default MapTest;

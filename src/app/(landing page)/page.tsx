@@ -70,12 +70,12 @@ export default function Home() {
                     >
                       Get started
                     </Link>
-                    <a
-                      href="#"
-                      className="text-sm font-semibold leading-6 text-gray-900"
+                    <Link
+                      href="/listings-page"
+                      className="text-sm font-semibold text-gray-900 py-2.5"
                     >
                       Live demo <span aria-hidden="true">→</span>
-                    </a>
+                    </Link>
                   </div>
                 </div>
                 <div className="mt-14 flex justify-end gap-8 sm:-mt-44 sm:justify-start sm:pl-20 lg:mt-0 lg:pl-0">
