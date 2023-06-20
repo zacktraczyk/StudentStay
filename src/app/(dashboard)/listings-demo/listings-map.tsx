@@ -1,7 +1,6 @@
 import React from "react";
 import mapboxgl, { Expression } from "mapbox-gl";
-import Map, { Layer, Source } from "react-map-gl";
-
+import Map, { Layer, Source, ViewState } from "react-map-gl";
 import { ListingsType } from "./page";
 
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -19,18 +18,17 @@ const layerStyle = {
 
 interface PropListingsMap {
   listings: ListingsType | undefined;
+  viewState: Partial<ViewState>;
+  setViewState: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
 }
 
 function ListingsMap(props: PropListingsMap) {
-  const { listings } = props;
+  const { listings, viewState, setViewState } = props;
 
   return (
     <Map
-      initialViewState={{
-        longitude: -122.033,
-        latitude: 36.967,
-        zoom: 14,
-      }}
+      {...viewState}
+      onMove={(e) => setViewState(e.viewState)}
       mapStyle="mapbox://styles/mapbox/streets-v9"
     >
       {listings && (
