@@ -16,8 +16,8 @@ const layerStyle = {
     "circle-color": [
       "case",
       ["boolean", ["feature-state", "hover"], false],
-      "#000",
       "#fff",
+      ["get", "color"],
     ] as Expression,
     "circle-stroke-color": ["get", "color"] as Expression,
   },
