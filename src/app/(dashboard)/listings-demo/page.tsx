@@ -31,7 +31,7 @@ function ListingsDemo() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row h-full w-full">
+    <div className="h-[100em] flex flex-col md:flex-row md:h-full w-full">
       <MapProvider>
         <SideMenu listings={listings} />
         <ListingsMap listings={listings} />
