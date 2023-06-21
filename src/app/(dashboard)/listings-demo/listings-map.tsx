@@ -1,11 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import mapboxgl, { Expression } from "mapbox-gl";
-import Map, { Layer, MapRef, Source, ViewState } from "react-map-gl";
+import Map, { Layer, MapRef, Source } from "react-map-gl";
 import { ListingsGeojson } from "@/lib/database.types";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
+
+const initialViewState = {
+  longitude: -122.033,
+  latitude: 36.967,
+  zoom: 14,
+};
 
 const layerStyle = {
   id: "listing-points",
@@ -25,12 +31,10 @@ const layerStyle = {
 
 interface PropListingsMap {
   listings: ListingsGeojson | undefined;
-  viewState: Partial<ViewState>;
-  setViewState: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
 }
 
 function ListingsMap(props: PropListingsMap) {
-  const { listings, viewState, setViewState } = props;
+  const { listings } = props;
   const mapRef = useRef<MapRef>(null);
 
   const onMapLoad = React.useCallback(() => {
@@ -80,11 +84,11 @@ function ListingsMap(props: PropListingsMap) {
 
   return (
     <Map
+      id="listingsMap"
       ref={mapRef}
       reuseMaps
-      {...viewState}
+      initialViewState={initialViewState}
       onLoad={onMapLoad}
-      onMove={(e) => setViewState(e.viewState)}
       mapStyle="mapbox://styles/mapbox/streets-v9"
     >
       {listings && (

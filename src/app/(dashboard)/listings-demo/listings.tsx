@@ -1,14 +1,13 @@
 import { ListingsGeojson } from "@/lib/database.types";
 import { Feature, Point, GeoJsonProperties } from "geojson";
-import { ViewState } from "react-map-gl";
+import { useMap } from "react-map-gl";
 
 interface PropListings {
   listings: ListingsGeojson | undefined;
-  setViewState: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
 }
 
 export default function Listings(props: PropListings) {
-  const { listings, setViewState } = props;
+  const { listings } = props;
 
   return (
     <div className="flex flex-col items-center gap-5 overflow-y-scroll h-60 md:h-full">
@@ -16,7 +15,7 @@ export default function Listings(props: PropListings) {
       {listings &&
         listings.features &&
         listings.features.map((listing, i) => (
-          <Listing key={i} listing={listing} setViewState={setViewState} />
+          <Listing key={i} listing={listing} />
         ))}
     </div>
   );
@@ -24,22 +23,21 @@ export default function Listings(props: PropListings) {
 
 interface PropListing {
   listing: Feature<Point, GeoJsonProperties>;
-  setViewState: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
 }
 
 function Listing(props: PropListing) {
-  const { listing, setViewState } = props;
+  const { listing } = props;
+  const { listingsMap } = useMap();
+
   const listingid = listing.properties?.listingid || "";
   const label = listing.properties?.label || "";
   const color = listing.properties?.color || "";
 
   const handleClick = () => {
-    const [longitude, latitude] = listing.geometry.coordinates;
-    const view = {
-      longitude,
-      latitude,
-    };
-    setViewState(view);
+    console;
+    listingsMap?.flyTo({
+      center: listing.geometry.coordinates as [number, number],
+    });
   };
 
   return (
