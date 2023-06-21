@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { ListingsGeojson } from "@/lib/database.types";
-import { supabase } from "@/lib/supabaseClient";
-import LocationCreate from "./location-create";
+import LocationCreate from "./listings-create";
 import Listings from "./listings";
 import ListingsMap from "./listings-map";
 import { MapProvider } from "react-map-gl";
@@ -13,40 +12,17 @@ import Image from "next/image";
 import logo from "../../../../public/logo.svg";
 
 function ListingsDemo() {
-  const [listings, setListings] = useState<ListingsGeojson>();
-
-  useEffect(() => {
-    const getListings = async () => {
-      const { data, error } = await supabase.rpc("nearby_listings_demo");
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      setListings(data[0].json_build_object);
-    };
-
-    getListings();
-  }, []);
-
   return (
     <div className="h-[100em] flex flex-col md:flex-row md:h-full w-full">
       <MapProvider>
-        <SideMenu listings={listings} />
-        <ListingsMap listings={listings} />
+        <SideMenu />
+        <ListingsMap />
       </MapProvider>
     </div>
   );
 }
 
-interface PropSideMenu {
-  listings: ListingsGeojson | undefined;
-}
-
-function SideMenu(props: PropSideMenu) {
-  const { listings } = props;
-
+function SideMenu() {
   return (
     <div className="p-10 flex flex-col items-stretch">
       <div className="flex lg:flex-1 mb-10">
@@ -57,7 +33,7 @@ function SideMenu(props: PropSideMenu) {
       </div>
       <LocationCreate />
       <hr className="h-px bg-gray-200 border-0 my-8" />
-      <Listings listings={listings} />
+      <Listings />
     </div>
   );
 }

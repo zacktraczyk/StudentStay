@@ -1,13 +1,9 @@
-import { ListingsGeojson } from "@/lib/database.types";
+import useListings from "@/hooks/useListings";
 import { Feature, Point, GeoJsonProperties } from "geojson";
 import { useMap } from "react-map-gl";
 
-interface PropListings {
-  listings: ListingsGeojson | undefined;
-}
-
-export default function Listings(props: PropListings) {
-  const { listings } = props;
+export default function Listings() {
+  const { data: listings } = useListings();
 
   return (
     <div className="flex flex-col items-center gap-5 overflow-y-scroll h-60 md:h-full">

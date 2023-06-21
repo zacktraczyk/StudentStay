@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import mapboxgl, { Expression } from "mapbox-gl";
 import Map, { Layer, MapRef, Source } from "react-map-gl";
-import { ListingsGeojson } from "@/lib/database.types";
+import useListings from "@/hooks/useListings";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -29,12 +29,8 @@ const layerStyle = {
   },
 };
 
-interface PropListingsMap {
-  listings: ListingsGeojson | undefined;
-}
-
-function ListingsMap(props: PropListingsMap) {
-  const { listings } = props;
+function ListingsMap() {
+  const { data: listings } = useListings();
   const mapRef = useRef<MapRef>(null);
 
   const onMapLoad = React.useCallback(() => {

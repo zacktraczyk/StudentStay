@@ -1,11 +1,9 @@
-import { supabase } from "@/lib/supabaseClient";
+import useAddListingMutation from "@/hooks/useAddListingMutation";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 
-const coordToPgisPoint = (coord: [number, number]) => {
-  return `POINT(${coord[0].toFixed(6)} ${coord[1].toFixed(6)})`;
-};
-
 export default function LocationCreate() {
+  const addListingMutation = useAddListingMutation();
   const [locationLabel, setLocationLabel] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -14,23 +12,12 @@ export default function LocationCreate() {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    try {
-      const locationPoint = coordToPgisPoint([
-        parseFloat(longitude),
-        parseFloat(latitude),
-      ]);
-
-      const data = {
-        label: locationLabel,
-        color: color,
-        location: locationPoint,
-      };
-
-      const { error } = await supabase.from("listingsdemo").insert(data);
-      if (error) throw error;
-    } catch (error) {
-      console.error(error);
-    }
+    addListingMutation.mutate({
+      locationLabel: locationLabel,
+      longitude: parseFloat(longitude),
+      latitude: parseFloat(latitude),
+      color: color,
+    });
   };
 
   return (
