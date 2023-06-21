@@ -1,6 +1,7 @@
 import "../globals.css";
 import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import Provider from "@/components/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className={inter.className + " h-full"}>{children}</body>
+      <body className={inter.className + " h-full"}>
+        <Provider>{children}</Provider>
+      </body>
       <Analytics />
     </html>
   );
