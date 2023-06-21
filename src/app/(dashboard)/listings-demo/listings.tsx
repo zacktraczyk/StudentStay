@@ -1,9 +1,9 @@
+import { ListingsGeojson } from "@/lib/database.types";
 import { Feature, Point, GeoJsonProperties } from "geojson";
-import { ListingsType } from "./page";
 import { ViewState } from "react-map-gl";
 
 interface PropListings {
-  listings: ListingsType | undefined;
+  listings: ListingsGeojson | undefined;
   setViewState: React.Dispatch<React.SetStateAction<Partial<ViewState>>>;
 }
 
@@ -11,8 +11,8 @@ export default function Listings(props: PropListings) {
   const { listings, setViewState } = props;
 
   return (
-    <div className="flex flex-col items-center gap-5 overflow-y-scroll">
-      <h1>Listings</h1>
+    <div className="flex flex-col items-center gap-5 overflow-y-scroll h-60 md:h-full">
+      <h1 className="w-full">Listings</h1>
       {listings &&
         listings.features &&
         listings.features.map((listing, i) => (

@@ -25,7 +25,7 @@ export default function Header() {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Student Stay</span>
             <Image priority className="h-8 w-auto" src={logo} alt="" />
           </Link>

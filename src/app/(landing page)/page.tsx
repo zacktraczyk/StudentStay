@@ -71,7 +71,7 @@ export default function Home() {
                       Get started
                     </Link>
                     <Link
-                      href="/listings-page"
+                      href="/listings-demo"
                       className="text-sm font-semibold text-gray-900 py-2.5"
                     >
                       Live demo <span aria-hidden="true">→</span>
