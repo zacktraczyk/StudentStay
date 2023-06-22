@@ -40,8 +40,7 @@ function Listing(props: PropListing) {
             style={{ borderColor: color }}
             onClick={handleClick}
         >
-            <p>ID: {listingid}</p>
-            <p>Label: {label}</p>
+            <p className='w-full text-center'>{label}</p>
         </div>
     )
 }
