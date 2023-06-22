@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { useQuery } from "@tanstack/react-query";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { ListingsGeojson } from "@/lib/database.types";
+import { useQuery } from '@tanstack/react-query'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { ListingsGeojson } from '@/lib/database.types'
 
 const getListings = async () => {
-  const supabase = createClientComponentClient();
-  const { data, error } = await supabase.rpc("nearby_listings_demo");
+    const supabase = createClientComponentClient()
+    const { data, error } = await supabase.rpc('nearby_listings_demo')
 
-  if (error) {
-    throw error;
-  }
+    if (error) {
+        throw error
+    }
 
-  return data[0].json_build_object;
-};
+    return data[0].json_build_object
+}
 
 export default function useListings() {
-  return useQuery<ListingsGeojson>(["listings"], () => getListings());
+    return useQuery<ListingsGeojson>(['listings'], () => getListings())
 }
