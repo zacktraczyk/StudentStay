@@ -1,5 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
-import { Fragment } from 'react'
+import { Dispatch, Fragment, SetStateAction } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { EnvelopeIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'

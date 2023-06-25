@@ -23,9 +23,8 @@ function Listing(props: PropListing) {
     const { listing } = props
     const { listingsMap } = useMap()
 
-    const listingid = listing.properties?.listingid || ''
-    const label = listing.properties?.label || ''
-    const color = listing.properties?.color || ''
+    const label = listing.properties?.label || 'NA'
+    const color = listing.properties?.color || '#FFFFFF'
 
     const handleClick = () => {
         console

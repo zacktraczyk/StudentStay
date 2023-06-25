@@ -1,5 +1,4 @@
-import AccountNav from '@/components/accountnav'
-import React from 'react'
+import AccountNav from './accountnav'
 
 function AccountLayout({ children }: { children: React.ReactNode }) {
     return (

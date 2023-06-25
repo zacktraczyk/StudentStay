@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import Link from 'next/link'
 import Image from 'next/image'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import CheckEmailModal from './check-email-modal'
 
 import logo from '../../../../public/logo.svg'
-import CheckEmailModal from './check-email-modal'
 
 export default function Login() {
     const [email, setEmail] = useState('')
