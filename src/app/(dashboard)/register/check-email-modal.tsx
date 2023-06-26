@@ -18,9 +18,9 @@ export default function CheckEmailModal({ open, setOpen }: CheckEmailModalProps)
                     as={Fragment}
                     enter='ease-out duration-300'
                     enterFrom='opacity-0'
-                    enterTo='opacity-100'
+                    enterTo='opacity-90'
                     leave='ease-in duration-200'
-                    leaveFrom='opacity-100'
+                    leaveFrom='opacity-90'
                     leaveTo='opacity-0'
                 >
                     <div className='bg-opacity-\75 fixed inset-0 bg-gray-500 transition-opacity' />
