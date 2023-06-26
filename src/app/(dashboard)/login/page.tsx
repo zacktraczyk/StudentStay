@@ -1,36 +1,38 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 import logo from '../../../../public/logo.svg'
 
+type FormValues = {
+    email: string
+    password: string
+}
+
 export default function Login() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const supabase = createClientComponentClient()
     const router = useRouter()
+    const supabase = createClientComponentClient()
 
-    const handleLogin = async (e: React.SyntheticEvent) => {
-        e.preventDefault()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormValues>()
 
+    const handleLogin: SubmitHandler<FormValues> = async (data) => {
         try {
             const { error: AuthError } = await supabase.auth.signInWithPassword({
-                email,
-                password,
+                ...data,
             })
             if (AuthError) throw AuthError
             router.push('/account')
         } catch (error) {
             console.error(error)
         }
-    }
-
-    const handleSignOut = async () => {
-        await supabase.auth.signOut()
     }
 
     return (
@@ -57,7 +59,7 @@ export default function Login() {
 
                     <div className='mt-10'>
                         <div>
-                            <form onSubmit={handleLogin} className='space-y-6'>
+                            <form onSubmit={handleSubmit(handleLogin)} className='space-y-6'>
                                 <div>
                                     <label
                                         htmlFor='email'
@@ -68,14 +70,23 @@ export default function Login() {
                                     <div className='mt-2'>
                                         <input
                                             id='email'
-                                            name='email'
-                                            type='email'
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            value={email}
-                                            autoComplete='email'
-                                            required
-                                            className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                            {...register('email', {
+                                                required: true,
+                                                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                            })}
+                                            className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                            aria-invalid={errors.email ? 'true' : 'false'}
                                         />
+                                        {errors.email?.type === 'pattern' && (
+                                            <p className='mt-2 text-xs text-rose-500'>
+                                                Invalid email address
+                                            </p>
+                                        )}
+                                        {errors.email?.type === 'required' && (
+                                            <p className='mt-2 text-xs text-rose-500'>
+                                                This field is required
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -89,14 +100,23 @@ export default function Login() {
                                     <div className='mt-2'>
                                         <input
                                             id='password'
-                                            name='password'
-                                            type='password'
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            value={password}
-                                            autoComplete='current-password'
-                                            required
-                                            className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                            {...register('password', {
+                                                required: true,
+                                                minLength: 8,
+                                            })}
+                                            className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                            aria-invalid={errors.password ? 'true' : 'false'}
                                         />
+                                        {errors.password?.type === 'minLength' && (
+                                            <p className='mt-2 text-xs text-rose-500'>
+                                                Password must be at least 8 characters
+                                            </p>
+                                        )}
+                                        {errors.password?.type === 'required' && (
+                                            <p className='mt-2 text-xs text-rose-500'>
+                                                This Field is required
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -129,7 +149,7 @@ export default function Login() {
                                 <div>
                                     <button
                                         type='submit'
-                                        className='flex w-full justify-center rounded-md bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
+                                        className='flex w-full justify-center rounded-md bg-green-800 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm transition-colors hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800 disabled:bg-gray-500'
                                     >
                                         Sign in
                                     </button>
