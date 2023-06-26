@@ -4,28 +4,44 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import CheckEmailModal from './check-email-modal'
 
 import logo from '../../../../public/logo.svg'
 
-export default function Login() {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordConfirm, setPasswordConfirm] = useState('')
-    const supabase = createClientComponentClient()
+const formSchema = z
+    .object({
+        email: z.string().email('Invalid email address').min(1, 'Email is required'),
+        password: z
+            .string()
+            .min(8, 'Password must be at least 8 characters')
+            .min(1, 'Password is required'),
+        passwordConfirm: z.string().min(1, 'Password confirmation is required'),
+    })
+    .refine((data) => data.password === data.passwordConfirm, {
+        message: 'Passwords do not match',
+        path: ['passwordConfirm'],
+    })
 
+type FormSchemaType = z.infer<typeof formSchema>
+
+export default function Login() {
+    const supabase = createClientComponentClient()
     const [openModal, setOpenModal] = useState(false)
 
-    const handleRegister = async (e: React.SyntheticEvent) => {
-        e.preventDefault()
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<FormSchemaType>({ resolver: zodResolver(formSchema) })
+
+    const handleRegister: SubmitHandler<FormSchemaType> = async (data) => {
         try {
-            if (password != passwordConfirm) {
-                alert('passwords do not match')
-                throw 'passwords do not match'
-            }
             const { error: AuthError } = await supabase.auth.signUp({
-                email,
-                password,
+                email: data.email,
+                password: data.password,
                 options: {
                     emailRedirectTo: `${location.origin}/auth/callback`,
                 },
@@ -69,7 +85,7 @@ export default function Login() {
 
                         <div className='mt-10'>
                             <div>
-                                <form onSubmit={handleRegister} className='space-y-6'>
+                                <form onSubmit={handleSubmit(handleRegister)} className='space-y-6'>
                                     <div>
                                         <label
                                             htmlFor='email'
@@ -80,14 +96,14 @@ export default function Login() {
                                         <div className='mt-2'>
                                             <input
                                                 id='email'
-                                                name='email'
-                                                type='email'
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                value={email}
-                                                autoComplete='email'
-                                                required
-                                                className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                                {...register('email')}
+                                                className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
                                             />
+                                            {errors.email && (
+                                                <span className='mt-2 text-xs text-rose-500'>
+                                                    {errors.email.message}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 
@@ -101,35 +117,38 @@ export default function Login() {
                                         <div className='mt-2'>
                                             <input
                                                 id='password'
-                                                name='password'
-                                                type='password'
-                                                onChange={(e) => setPassword(e.target.value)}
-                                                value={password}
-                                                autoComplete='current-password'
-                                                required
-                                                className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                                {...register('password')}
+                                                className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                                aria-invalid={errors.password ? 'true' : 'false'}
                                             />
+
+                                            {errors.password && (
+                                                <span className='mt-2 text-xs text-rose-500'>
+                                                    {errors.password.message}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 
                                     <div>
                                         <label
-                                            htmlFor='password'
+                                            htmlFor='password-confirm'
                                             className='block text-sm font-medium leading-6 text-gray-900'
                                         >
                                             Confirm Password
                                         </label>
                                         <div className='mt-2'>
                                             <input
-                                                id='password'
-                                                name='password'
-                                                type='password'
-                                                onChange={(e) => setPasswordConfirm(e.target.value)}
-                                                value={passwordConfirm}
-                                                autoComplete='current-password'
-                                                required
-                                                className='block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                                                id='password-confirm'
+                                                {...register('passwordConfirm')}
+                                                className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
                                             />
+
+                                            {errors.passwordConfirm && (
+                                                <span className='mt-2 text-xs text-rose-500'>
+                                                    {errors.passwordConfirm.message}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 

@@ -5,13 +5,20 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 import logo from '../../../../public/logo.svg'
 
-type FormValues = {
-    email: string
-    password: string
-}
+const formSchema = z.object({
+    email: z.string().email('Invalid email address').min(1, 'Email is required'),
+    password: z
+        .string()
+        .min(8, 'Password must be at least 8 characters')
+        .min(1, 'Password is required'),
+})
+
+type FormSchemaType = z.infer<typeof formSchema>
 
 export default function Login() {
     const router = useRouter()
@@ -21,9 +28,9 @@ export default function Login() {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<FormValues>()
+    } = useForm<FormSchemaType>({ resolver: zodResolver(formSchema) })
 
-    const handleLogin: SubmitHandler<FormValues> = async (data) => {
+    const handleLogin: SubmitHandler<FormSchemaType> = async (data) => {
         try {
             const { error: AuthError } = await supabase.auth.signInWithPassword({
                 ...data,
@@ -70,22 +77,14 @@ export default function Login() {
                                     <div className='mt-2'>
                                         <input
                                             id='email'
-                                            {...register('email', {
-                                                required: true,
-                                                pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                            })}
+                                            {...register('email')}
                                             className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
                                             aria-invalid={errors.email ? 'true' : 'false'}
                                         />
-                                        {errors.email?.type === 'pattern' && (
-                                            <p className='mt-2 text-xs text-rose-500'>
-                                                Invalid email address
-                                            </p>
-                                        )}
-                                        {errors.email?.type === 'required' && (
-                                            <p className='mt-2 text-xs text-rose-500'>
-                                                This field is required
-                                            </p>
+                                        {errors.email && (
+                                            <span className='mt-2 text-xs text-rose-500'>
+                                                {errors.email.message}
+                                            </span>
                                         )}
                                     </div>
                                 </div>
@@ -100,22 +99,14 @@ export default function Login() {
                                     <div className='mt-2'>
                                         <input
                                             id='password'
-                                            {...register('password', {
-                                                required: true,
-                                                minLength: 8,
-                                            })}
+                                            {...register('password')}
                                             className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
                                             aria-invalid={errors.password ? 'true' : 'false'}
                                         />
-                                        {errors.password?.type === 'minLength' && (
-                                            <p className='mt-2 text-xs text-rose-500'>
-                                                Password must be at least 8 characters
-                                            </p>
-                                        )}
-                                        {errors.password?.type === 'required' && (
-                                            <p className='mt-2 text-xs text-rose-500'>
-                                                This Field is required
-                                            </p>
+                                        {errors.password && (
+                                            <span className='mt-2 text-xs text-rose-500'>
+                                                {errors.password.message}
+                                            </span>
                                         )}
                                     </div>
                                 </div>
