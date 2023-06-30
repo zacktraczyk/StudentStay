@@ -15,10 +15,8 @@ export type Listing = {
     color: string
 }
 
-type ListingsTableInsert = Database['public']['Tables']['listingsdemo']['Insert']
-
 const addListing = async ({ locationLabel, longitude, latitude, color }: Listing) => {
-    const supabase = createClientComponentClient()
+    const supabase = createClientComponentClient<Database>()
     const locationPoint = coordToPgisPoint([longitude, latitude])
 
     const data = {

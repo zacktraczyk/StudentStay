@@ -1,10 +1,11 @@
 'use client'
 
+import { Database } from '@/lib/database.types'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useQuery } from '@tanstack/react-query'
 
 const getUser = async (userId: string | undefined) => {
-    const supabase = createClientComponentClient()
+    const supabase = createClientComponentClient<Database>()
 
     let { data, error, status } = await supabase
         .from('profiles')
