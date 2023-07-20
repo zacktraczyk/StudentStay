@@ -5,25 +5,25 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useQuery } from '@tanstack/react-query'
 
 const getUser = async (userId: string | undefined) => {
-    const supabase = createClientComponentClient<Database>()
+  const supabase = createClientComponentClient<Database>()
 
-    let { data, error, status } = await supabase
-        .from('profiles')
-        .select(`full_name, username, website, avatar_url`)
-        .eq('id', userId)
-        .single()
+  let { data, error, status } = await supabase
+    .from('profiles')
+    .select(`full_name, username, website, avatar_url`)
+    .eq('id', userId)
+    .single()
 
-    if (error && status !== 406) {
-        throw new Error(error.message)
-    }
+  if (error && status !== 406) {
+    throw new Error(error.message)
+  }
 
-    if (!data) {
-        throw new Error('Profile not found')
-    }
+  if (!data) {
+    throw new Error('Profile not found')
+  }
 
-    return data
+  return data
 }
 
 export default function useUser(userId: string | undefined) {
-    return useQuery(['user', userId], () => getUser(userId))
+  return useQuery(['user', userId], () => getUser(userId))
 }
