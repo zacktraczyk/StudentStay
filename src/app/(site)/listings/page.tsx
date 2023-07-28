@@ -2,8 +2,8 @@
 
 import { MapProvider } from 'react-map-gl'
 import ListingsMap from './listings-map'
-import Example from './tailwind'
 import { useState } from 'react'
+import ListingsPanel from './listings-panel'
 
 export default function Listings() {
   const [mapToggle, setMapToggle] = useState(false)
@@ -16,7 +16,7 @@ export default function Listings() {
             mapToggle ? 'hidden' : 'block'
           }`}
         >
-          <Example />
+          <ListingsPanel />
         </div>
         <div className={`w-full md:block ${mapToggle ? 'block' : 'hidden'}`}>
           <ListingsMap />

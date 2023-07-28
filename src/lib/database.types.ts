@@ -1,10 +1,37 @@
-import { FeatureCollection, Point, GeoJsonProperties } from 'geojson'
-
-export type ListingsGeojson = FeatureCollection<Point, GeoJsonProperties>
-
-export type Json = string | number | boolean | null | { [key: string]: Json } | Json[]
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export interface Database {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+          extensions?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       listingsdemo: {
@@ -55,11 +82,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: 'profiles_id_fkey'
-            columns: ['id']
-            referencedRelation: 'users'
-            referencedColumns: ['id']
-          },
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
         ]
       }
     }
@@ -67,18 +94,10 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      nearby_listings_demo:
-        | {
-            Args: {
-              lat: number
-              long: number
-            }
-            Returns: Record<string, FeatureCollection<Point, GeoJsonProperties>>[]
-          }
-        | {
-            Args: Record<PropertyKey, never>
-            Returns: Record<string, FeatureCollection<Point, GeoJsonProperties>>[]
-          }
+      nearby_listings_demo: {
+        Args: Record<PropertyKey, never>
+        Returns: Record<string, unknown>[]
+      }
     }
     Enums: {
       [_ in never]: never
@@ -125,11 +144,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: 'buckets_owner_fkey'
-            columns: ['owner']
-            referencedRelation: 'users'
-            referencedColumns: ['id']
-          },
+            foreignKeyName: "buckets_owner_fkey"
+            columns: ["owner"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
         ]
       }
       migrations: {
@@ -192,17 +211,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: 'objects_bucketId_fkey'
-            columns: ['bucket_id']
-            referencedRelation: 'buckets'
-            referencedColumns: ['id']
+            foreignKeyName: "objects_bucketId_fkey"
+            columns: ["bucket_id"]
+            referencedRelation: "buckets"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'objects_owner_fkey'
-            columns: ['owner']
-            referencedRelation: 'users'
-            referencedColumns: ['id']
-          },
+            foreignKeyName: "objects_owner_fkey"
+            columns: ["owner"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
         ]
       }
     }

@@ -8,8 +8,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
 
 const initialViewState = {
-  longitude: -122.033,
-  latitude: 36.967,
+  longitude: -87.79,
+  latitude: 41.88,
   zoom: 14,
 }
 
@@ -23,9 +23,9 @@ const layerStyle = {
       'case',
       ['boolean', ['feature-state', 'hover'], false],
       '#fff',
-      ['get', 'color'],
+      '#000',
     ] as Expression,
-    'circle-stroke-color': ['get', 'color'] as Expression,
+    'circle-stroke-color': '#000',
   },
 }
 
