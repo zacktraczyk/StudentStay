@@ -10,7 +10,7 @@ import logo from '../../../public/logo.svg'
 
 const navigation = [
   { name: 'Home', href: '/' },
-  { name: 'Listings', href: '/listings' },
+  { name: 'Listings', href: '/listings/northwestern' },
   { name: 'Roomates', href: '/roomates' },
   { name: 'About', href: '/about' },
 ]

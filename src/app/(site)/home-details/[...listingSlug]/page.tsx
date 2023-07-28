@@ -7,53 +7,15 @@ import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
 import useListing from '@/hooks/useListing'
 import { useRouter } from 'next/navigation'
 
-const product = {
-  name: 'Zip Tote Basket',
-  price: '$140',
-  rating: 4,
-  images: [
-    {
-      id: 1,
-      name: 'Angled view',
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-03-product-01.jpg',
-      alt: 'Angled front view with bag zipped and handles upright.',
-    },
-    // More images...
-  ],
-  colors: [
-    { name: 'Washed Black', bgColor: 'bg-gray-700', selectedColor: 'ring-gray-700' },
-    { name: 'White', bgColor: 'bg-white', selectedColor: 'ring-gray-400' },
-    { name: 'Washed Gray', bgColor: 'bg-gray-500', selectedColor: 'ring-gray-500' },
-  ],
-  description: `
-    <p>The Zip Tote Basket is the perfect midpoint between shopping tote and comfy backpack. With convertible straps, you can hand carry, should sling, or backpack this convenient and spacious bag. The zip top and durable canvas construction keeps your goods protected for all-day use.</p>
-  `,
-  details: [
-    {
-      name: 'Features',
-      items: [
-        'Multiple strap configurations',
-        'Spacious interior with top zip',
-        'Leather handle and tabs',
-        'Interior dividers',
-        'Stainless strap loops',
-        'Double stitched construction',
-        'Water-resistant',
-      ],
-    },
-    // More sections...
-  ],
-}
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Page({ params }: { params: { listingID: string } }) {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0])
+export default function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
+  const [listingAddress, listingID] = params.listingSlug
   const router = useRouter()
 
-  const { data: listing, isLoading, isError } = useListing(params.listingID)
+  const { data: listing, isLoading, isError } = useListing(listingID)
 
   if (isLoading) {
     return <div className='flex h-60 w-screen items-center justify-center py-16'>loading...</div>
@@ -74,10 +36,7 @@ export default function Page({ params }: { params: { listingID: string } }) {
 
   return (
     <div className='bg-white'>
-      <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
-      <h1 className='py-8 text-xl' onClick={() => router.back()}>
-        Back
-      </h1>
+      <div className='mx-auto max-w-2xl px-4 py-28 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
         <div className='lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8'>
           {/* Image gallery */}
           <Tab.Group as='div' className='flex flex-col-reverse'>
@@ -126,15 +85,19 @@ export default function Page({ params }: { params: { listingID: string } }) {
 
           {/* Product info */}
           <div className='mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0'>
-            <h1 className='text-3xl font-bold tracking-tight text-gray-900'>{listing.listing_name}</h1>
+            <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
+              {listing.listing_name}
+            </h1>
 
             <div className='mt-3'>
               <h2 className='sr-only'>Product information</h2>
-              <p className='text-3xl tracking-tight text-gray-900'>${listing.monthly_cost} / month</p>
+              <p className='text-3xl tracking-tight text-gray-900'>
+                ${listing.monthly_cost.toLocaleString()} / month
+              </p>
             </div>
 
             {/* Reviews */}
-            <div className='mt-3'>
+            {/* <div className='mt-3'>
               <h3 className='sr-only'>Reviews</h3>
               <div className='flex items-center'>
                 <div className='flex items-center'>
@@ -151,54 +114,17 @@ export default function Page({ params }: { params: { listingID: string } }) {
                 </div>
                 <p className='sr-only'>{product.rating} out of 5 stars</p>
               </div>
-            </div>
+            </div> */}
 
             <div className='mt-6'>
               <h3 className='sr-only'>Description</h3>
 
-              <div
-                className='space-y-6 text-base text-gray-700'
-              ><p>{listing.description}</p>
+              <div className='space-y-6 text-base text-gray-700'>
+                <p>{listing.description}</p>
               </div>
             </div>
 
             <form className='mt-6'>
-              {/* Colors */}
-              <div>
-                <h3 className='text-sm text-gray-600'>Color</h3>
-
-                <RadioGroup value={selectedColor} onChange={setSelectedColor} className='mt-2'>
-                  <RadioGroup.Label className='sr-only'>Choose a color</RadioGroup.Label>
-                  <span className='flex items-center space-x-3'>
-                    {product.colors.map((color) => (
-                      <RadioGroup.Option
-                        key={color.name}
-                        value={color}
-                        className={({ active, checked }) =>
-                          classNames(
-                            color.selectedColor,
-                            active && checked ? 'ring ring-offset-1' : '',
-                            !active && checked ? 'ring-2' : '',
-                            'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-none',
-                          )
-                        }
-                      >
-                        <RadioGroup.Label as='span' className='sr-only'>
-                          {color.name}
-                        </RadioGroup.Label>
-                        <span
-                          aria-hidden='true'
-                          className={classNames(
-                            color.bgColor,
-                            'h-8 w-8 rounded-full border border-black border-opacity-10',
-                          )}
-                        />
-                      </RadioGroup.Option>
-                    ))}
-                  </span>
-                </RadioGroup>
-              </div>
-
               <div className='mt-10 flex'>
                 <button
                   type='submit'
@@ -217,7 +143,7 @@ export default function Page({ params }: { params: { listingID: string } }) {
               </div>
             </form>
 
-            <section aria-labelledby='details-heading' className='mt-12'>
+            {/* <section aria-labelledby='details-heading' className='mt-12'>
               <h2 id='details-heading' className='sr-only'>
                 Additional details
               </h2>
@@ -254,8 +180,8 @@ export default function Page({ params }: { params: { listingID: string } }) {
                         </h3>
                         <Disclosure.Panel as='div' className='prose prose-sm pb-6'>
                           <ul role='list'>
-                            {detail.items.map((item) => (
-                              <li key={item}>{item}</li>
+                            {listing.features.map((feature) => (
+                              <li key={feature}>{feature}</li>
                             ))}
                           </ul>
                         </Disclosure.Panel>
@@ -264,7 +190,7 @@ export default function Page({ params }: { params: { listingID: string } }) {
                   </Disclosure>
                 ))}
               </div>
-            </section>
+            </section> */}
           </div>
         </div>
       </div>
