@@ -7,7 +7,7 @@ import { Database } from '@/lib/database.types'
 
 const getListings = async () => {
   const supabase = createClientComponentClient<Database>()
-  const { data, error } = await supabase.rpc('nearby_listings')
+  const { data, error } = await supabase.rpc('listings_with_geojson')
 
   if (error) {
     throw error

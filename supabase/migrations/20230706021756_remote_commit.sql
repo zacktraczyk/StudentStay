@@ -60,8 +60,6 @@ ALTER TABLE ONLY "public"."profiles"
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_username_key" UNIQUE ("username");
 
-CREATE INDEX "listingsdemo_geo_index" ON "public"."listingsdemo" USING "gist" ("location");
-
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 

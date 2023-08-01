@@ -53,29 +53,29 @@ export default function ListingsPanel() {
 }
 
 interface ListingProps {
-  listingid: number
-  street1: string
-  city: string
-  listing_name: string
-  preview_imgs: string[]
+  listing_id: number
+  address_street: string
+  address_city: string
+  building_name: string
+  preview_img_src: string
   beds: number
   baths: number
-  size_square_feet: number
-  monthly_cost: number
+  square_footage: number
+  price: number
 
   coordinates: [number, number]
 }
 
 function Listing({
-  listingid,
-  street1,
-  city,
-  listing_name,
-  preview_imgs,
+  listing_id,
+  address_street,
+  address_city,
+  building_name,
+  preview_img_src,
   beds,
   baths,
-  size_square_feet,
-  monthly_cost,
+  square_footage,
+  price,
   coordinates,
 }: ListingProps) {
   const { listingsMap } = useMap()
@@ -87,20 +87,17 @@ function Listing({
     })
   }
 
-  const listingAddress =
-    street1.replace(/\s+/g, '-').toLowerCase() + '-' + city.replace(/\s+/g, '-').toLowerCase()
-
   return (
-    <Link href={`/home-details/${listingAddress}/${listingid}`}>
+    <Link href={`/home-details/${address_street}/${listing_id}`}>
       <div
-        key={listingid}
+        key={listing_id}
         className='group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white'
         onMouseEnter={handleHover}
       >
         <div className='aspect-h-3 aspect-w-4 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-60'>
-          {preview_imgs && (
+          {preview_img_src && (
             <img
-              src={preview_imgs[0]}
+              src={preview_img_src}
               alt='Property listing preview'
               className='h-full w-full object-cover object-center sm:h-full sm:w-full'
             />
@@ -109,15 +106,13 @@ function Listing({
         <div className='flex flex-1 flex-col space-y-2 p-4'>
           <h3 className='text-sm font-medium text-gray-900'>
             <span aria-hidden='true' className='absolute inset-0' />
-            {listing_name}
+            {building_name}
           </h3>
           <div className='flex flex-1 flex-col justify-end'>
             <p className='text-sm italic text-gray-500'>{beds}</p>
             <p className='text-sm italic text-gray-500'>{baths}</p>
-            <p className='text-sm italic text-gray-500'>{size_square_feet} ft^2</p>
-            <p className='text-base font-medium text-gray-900'>
-              ${monthly_cost.toLocaleString()} / month
-            </p>
+            <p className='text-sm italic text-gray-500'>{square_footage} ft^2</p>
+            <p className='text-base font-medium text-gray-900'>${price.toLocaleString()} / month</p>
           </div>
         </div>
       </div>
