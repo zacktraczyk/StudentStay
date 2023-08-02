@@ -13,7 +13,8 @@ function classNames(...classes: string[]) {
 
 export default function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
   const [listingAddress, listingID] = params.listingSlug
-  const router = useRouter()
+
+  console.log(listingAddress, listingID)
 
   const { data: listing, isLoading, isError } = useListing(listingID)
 
@@ -24,6 +25,8 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
   if (isError) return <div className='text-rose-500'>error</div>
 
   console.log(listing)
+
+  // const preview_imgs = ([listing.preview_img_src] || []).concat(listing.additional_img_srcs)
 
   // return (
   //   <div className='flex flex-col items-center justify-center py-28'>
@@ -43,57 +46,65 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
             {/* Image selector */}
             <div className='mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none'>
               <Tab.List className='grid grid-cols-4 gap-6'>
-                {listing.preview_imgs.map((image, key) => (
-                  <Tab
-                    key={key}
-                    className='relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4'
-                  >
-                    {({ selected }) => (
-                      <>
-                        <span className='absolute inset-0 overflow-hidden rounded-md'>
-                          <img
-                            src={image}
-                            alt=''
-                            className='h-full w-full object-cover object-center'
+                {listing.additional_img_srcs &&
+                  listing.additional_img_srcs.map((image, key) => (
+                    <Tab
+                      key={key}
+                      className='relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4'
+                    >
+                      {({ selected }) => (
+                        <>
+                          <span className='absolute inset-0 overflow-hidden rounded-md'>
+                            <img
+                              src={image}
+                              alt=''
+                              className='h-full w-full object-cover object-center'
+                            />
+                          </span>
+                          <span
+                            className={classNames(
+                              selected ? 'ring-green-800' : 'ring-transparent',
+                              'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2',
+                            )}
+                            aria-hidden='true'
                           />
-                        </span>
-                        <span
-                          className={classNames(
-                            selected ? 'ring-green-800' : 'ring-transparent',
-                            'pointer-events-none absolute inset-0 rounded-md ring-2 ring-offset-2',
-                          )}
-                          aria-hidden='true'
-                        />
-                      </>
-                    )}
-                  </Tab>
-                ))}
+                        </>
+                      )}
+                    </Tab>
+                  ))}
               </Tab.List>
             </div>
 
             <Tab.Panels className='aspect-h-1 aspect-w-1 w-full'>
-              {listing.preview_imgs.map((image, key) => (
-                <Tab.Panel key={key}>
-                  <img
-                    src={image}
-                    className='h-full w-full object-cover object-center sm:rounded-lg'
-                  />
-                </Tab.Panel>
-              ))}
+              {listing.additional_img_srcs &&
+                listing.additional_img_srcs.map((image, key) => (
+                  <Tab.Panel key={key}>
+                    <img
+                      src={image}
+                      className='h-full w-full object-cover object-center sm:rounded-lg'
+                    />
+                  </Tab.Panel>
+                ))}
             </Tab.Panels>
           </Tab.Group>
 
           {/* Product info */}
           <div className='mt-10 px-4 sm:mt-16 sm:px-0 lg:mt-0'>
             <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
-              {listing.listing_name}
+              {listing.address_street}
             </h1>
 
             <div className='mt-3'>
               <h2 className='sr-only'>Product information</h2>
-              <p className='text-3xl tracking-tight text-gray-900'>
-                ${listing.monthly_cost.toLocaleString()} / month
-              </p>
+
+              {listing.price ? (
+                <p className='text-3xl tracking-tight text-gray-900'>
+                  ${listing.price.toLocaleString()}
+                  <span className='text-xl'> / month</span>
+                </p>
+              ) : (
+                <p className='text-3xl tracking-tight text-gray-700'>Contact for pricing</p>
+              )}
             </div>
 
             {/* Reviews */}
@@ -130,7 +141,7 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
                   type='submit'
                   className='flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-green-800 px-8 py-3 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full'
                 >
-                  Add to bag
+                  I'm Interested
                 </button>
 
                 <button
@@ -142,6 +153,16 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
                 </button>
               </div>
             </form>
+
+            <div className='mt-6'>
+              <h3 className='sr-only'>Home Details</h3>
+
+              <div className='space-y-6 text-base text-gray-700'>
+                <p>{listing.beds} Beds</p>
+                <p>{listing.baths} Baths</p>
+                <p>{listing.square_footage} sqft</p>
+              </div>
+            </div>
 
             {/* <section aria-labelledby='details-heading' className='mt-12'>
               <h2 id='details-heading' className='sr-only'>

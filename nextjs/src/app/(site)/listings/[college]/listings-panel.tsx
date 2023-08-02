@@ -87,8 +87,13 @@ function Listing({
     })
   }
 
+  const hyphenatedAddress = address_street
+    .replace(/\s+/g, '-')
+    .replace(/[^A-Za-z0-9\-]/g, '')
+    .toLowerCase()
+
   return (
-    <Link href={`/home-details/${address_street}/${listing_id}`}>
+    <Link href={`/home-details/${hyphenatedAddress}/${listing_id}`}>
       <div
         key={listing_id}
         className='group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white'
@@ -109,9 +114,9 @@ function Listing({
             {building_name}
           </h3>
           <div className='flex flex-1 flex-col justify-end'>
-            <p className='text-sm italic text-gray-500'>{beds}</p>
-            <p className='text-sm italic text-gray-500'>{baths}</p>
-            <p className='text-sm italic text-gray-500'>{square_footage} ft^2</p>
+            <p className='text-sm italic text-gray-500'>Beds: {beds}</p>
+            <p className='text-sm italic text-gray-500'>Baths: {baths}</p>
+            <p className='text-sm italic text-gray-500'>Sqft: {square_footage} ft^2</p>
             <p className='text-base font-medium text-gray-900'>${price.toLocaleString()} / month</p>
           </div>
         </div>

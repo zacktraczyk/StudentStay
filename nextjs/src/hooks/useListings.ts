@@ -13,9 +13,9 @@ const getListings = async () => {
     throw error
   }
 
-  return data[0].json_build_object as FeatureCollection
+  return data[0].json_build_object
 }
 
 export default function useListings() {
-  return useQuery<FeatureCollection>(['listings'], () => getListings())
+  return useQuery(['listings'], () => getListings())
 }

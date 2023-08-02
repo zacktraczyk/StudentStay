@@ -17,11 +17,24 @@ export const supabase = createClient(
 // Prepare Actor input
 const actorName = "maxcopell/zillow-zip-search";
 
+const input = {
+  zipCodes: ["60201"],
+  forSaleIncludeComingSoon: false,
+  daysOnZillow: "",
+  forSaleByAgent: false,
+  forSaleByOwner: false,
+  forRent: true,
+  sold: false,
+};
+
+const options = {
+  maxItems: 1000,
+};
+
 (async () => {
-  // Print last actor run results from the default dataset (if any)
-  const actorClient = client.actor(actorName);
-  const lastSuccessfulRun = actorClient.lastRun({ status: "SUCCEEDED" });
-  const { items } = await lastSuccessfulRun.dataset().listItems();
+  // Run the Actor and wait for it to finish
+  const run = await client.actor(actorName).call(input, options);
+  const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
   // NOTE: Use Postgresql COPY for large datasets
   console.log("Uploading Dataset To Supabase");
@@ -33,16 +46,12 @@ const actorName = "maxcopell/zillow-zip-search";
 
     if (
       item.isUndisclosedAddress ||
-      !item.latLong ||
-      !item.latLong.longitude ||
-      !item.latLong.latitude
+      item.latLong ||
+      item.latLong.longitude ||
+      item.latLong.latitude
     ) {
       return;
     }
-
-    const additional_img_srcs = item.carouselPhotos
-      ? item.carouselPhotos.map((srcObj) => srcObj.url)
-      : [];
 
     const payload = {
       listing_type: "RENTAL",
@@ -63,7 +72,7 @@ const actorName = "maxcopell/zillow-zip-search";
       beds: item.beds,
 
       preview_img_src: item.imgSrc,
-      additional_img_srcs: additional_img_srcs,
+      //   additional_img_srcs: TODO
 
       ranged_price: false,
       price: item.unformattedPrice,

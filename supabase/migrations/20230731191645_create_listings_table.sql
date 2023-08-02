@@ -36,7 +36,7 @@ create table public.listings (
 
   created_at timestamp with time zone not null default timezone ('utc'::text, now()),
   listed_at timestamp with time zone not null default timezone ('utc'::text, now()),
-  listing_start_date timestamp with time zone not null default timezone ('utc'::text, now()),
+  listing_start_date timestamp with time zone,
   updated_at timestamp with time zone not null default timezone ('utc'::text, now()),
   days_on_market integer not null default 0,
 

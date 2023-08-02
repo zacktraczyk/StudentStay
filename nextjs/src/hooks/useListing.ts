@@ -6,7 +6,7 @@ import { Database } from '@/lib/database.types'
 
 const getListing = async (listingID: string) => {
   const supabase = createClientComponentClient<Database>()
-  const { data, error } = await supabase.from('listings').select('*').eq('listingid', listingID)
+  const { data, error } = await supabase.from('listings').select('*').eq('listing_id', listingID)
 
   if (error) {
     throw error

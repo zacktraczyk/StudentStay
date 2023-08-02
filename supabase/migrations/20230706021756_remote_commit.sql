@@ -30,7 +30,7 @@ CREATE FUNCTION "public"."handle_new_user"() RETURNS "trigger"
     LANGUAGE "plpgsql" SECURITY DEFINER
     AS $$
 begin
-  insert into public.profiles (id, full_name, avatar_url)
+  insert into public.profiles (profile_id, full_name, avatar_url)
   values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
   return new;
 end;
@@ -43,7 +43,7 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 CREATE TABLE "public"."profiles" (
-    "id" "uuid" NOT NULL,
+    "profile_id" "uuid" NOT NULL,
     "updated_at" timestamp with time zone,
     "username" "text",
     "full_name" "text",
@@ -55,19 +55,19 @@ CREATE TABLE "public"."profiles" (
 ALTER TABLE "public"."profiles" OWNER TO "postgres";
 
 ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
+    ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("profile_id");
 
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_username_key" UNIQUE ("username");
 
 ALTER TABLE ONLY "public"."profiles"
-    ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+    ADD CONSTRAINT "profiles_id_fkey" FOREIGN KEY ("profile_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
 CREATE POLICY "Public profiles are viewable by everyone." ON "public"."profiles" FOR SELECT USING (true);
 
-CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT WITH CHECK (("auth"."uid"() = "id"));
+CREATE POLICY "Users can insert their own profile." ON "public"."profiles" FOR INSERT WITH CHECK (("auth"."uid"() = "profile_id"));
 
-CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "id"));
+CREATE POLICY "Users can update own profile." ON "public"."profiles" FOR UPDATE USING (("auth"."uid"() = "profile_id"));
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
