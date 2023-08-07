@@ -33,7 +33,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
       let { data, error, status } = await supabase
         .from('profiles')
         .select(`full_name, username, website`)
-        .eq('id', user?.id)
+        .eq('profile_id', user?.id)
         .single()
 
       if (error && status !== 406) {

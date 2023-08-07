@@ -38,7 +38,6 @@ create table public.listings (
   listed_at timestamp with time zone not null default timezone ('utc'::text, now()),
   listing_start_date timestamp with time zone,
   updated_at timestamp with time zone not null default timezone ('utc'::text, now()),
-  days_on_market integer not null default 0,
 
   constraint listings_pkey primary key (listing_id)
 ) tablespace pg_default;
