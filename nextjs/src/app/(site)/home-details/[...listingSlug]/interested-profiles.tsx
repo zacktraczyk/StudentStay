@@ -1,27 +1,37 @@
-import Image from 'next/image'
+import { useSupabase } from '@/app/supabase-provider'
 import React from 'react'
 
-type Profile = { profile_id: string; avatar_url: string; full_name: string }
-
 interface InterestedProfilesProps {
-  profiles: Profile[] | null
+  listing_id: number
 }
 
-export default function InterestedProfiles({ profiles }: InterestedProfilesProps) {
+export default async function InterestedProfiles({ listing_id }: InterestedProfilesProps) {
+  const { supabase, session } = useSupabase()
+
+  const { data: profiles, error } = await supabase.rpc('listing_favorited_by', {
+    current_profile_id: session?.user.id || undefined,
+    selected_listing_id: Number(listing_id),
+  })
+
+  if (error) {
+    console.error(error)
+  }
+
   return (
     <div>
-      <h1 className='text-2xl'>Users who also like this listing:</h1>
-      {profiles ? (
+      <h1 className='py-3 text-2xl'>Users who also like this listing</h1>
+      {profiles && profiles.length > 0 ? (
         <div className='lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8'>
           {profiles.map((profile) => (
             <div key={profile.profile_id}>
-              <p></p>
               <img
-                className='relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-full bg-white object-cover text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4'
-                src={profile.avatar_url}
+                className='relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border-4 bg-white object-cover text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4'
+                src={
+                  profile.avatar_url ||
+                  'https://www.reso.org/wp-content/uploads/2020/03/No-Photo-Available-591x591-2.jpg'
+                }
                 alt={profile.full_name}
               />
-              {/* <div>{profile.full_name}</div> */}
             </div>
           ))}
         </div>

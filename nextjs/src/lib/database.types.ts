@@ -180,7 +180,8 @@ export interface Database {
     Functions: {
       listing_favorited_by: {
         Args: {
-          selected_listing_id: number
+          current_profile_id?: string
+          selected_listing_id?: number
         }
         Returns: {
           profile_id: string

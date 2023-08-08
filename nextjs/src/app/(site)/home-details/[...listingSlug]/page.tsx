@@ -12,9 +12,11 @@ function classNames(...classes: string[]) {
 }
 
 export default async function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
-  const [_, listing_id] = params.listingSlug
+  let [_, _listing_id] = params.listingSlug
+  const listing_id = Number(_listing_id)
   const { supabase, session } = useSupabase()
 
+  // TODO: Load listing and favorite in parallel
   // Load listing
   const { data: listing, error: listing_error } = await supabase
     .from('listings')
@@ -27,28 +29,22 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
   }
 
   // Load favorite
-  const { data: favorited_data, error: favorite_error } = await supabase
-    .from('profile_listing_interests')
-    .select('active')
-    .eq('profile_id', session!.user.id)
-    .eq('listing_id', listing_id)
-    .maybeSingle()
+  let favorited = false
 
-  if (favorite_error) {
-    console.error(favorite_error)
+  if (session != null) {
+    const { data: favorited_data, error: favorite_error } = await supabase
+      .from('profile_listing_interests')
+      .select('active')
+      .eq('profile_id', session?.user.id || '')
+      .eq('listing_id', listing_id)
+      .maybeSingle()
+
+    if (favorite_error || favorited_data?.active == null) {
+      console.error(favorite_error)
+    } else {
+      favorited = favorited_data!.active
+    }
   }
-
-  // Load favorited by
-  const { data: favorited_by_data, error: favorited_by_error } = await supabase.rpc(
-    'listing_favorited_by',
-    { current_profile_id: porfile_id, selected_listing_id: Number(listing_id) },
-  )
-
-  if (favorited_by_error) {
-    console.error(favorited_by_error)
-  }
-
-  console.log(favorited_by_data)
 
   return (
     <div className='bg-white'>
@@ -162,10 +158,7 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
                   Does Nothing
                 </button>
 
-                <FavoriteButton
-                  initial_favorite={favorited_data?.active || false}
-                  listing_id={Number(listing_id)}
-                />
+                <FavoriteButton initial_favorite={favorited} listing_id={listing_id} />
               </div>
             </form>
 
@@ -183,7 +176,7 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
             <div className='mt-6'>
               <h3 className='sr-only'>Interested Users</h3>
 
-              <InterestedProfiles profiles={favorited_by_data} />
+              <InterestedProfiles listing_id={listing_id} />
             </div>
 
             {/* <section aria-labelledby='details-heading' className='mt-12'>

@@ -24,7 +24,11 @@ create trigger profile_listing_interests_updated_at
   execute procedure public.profile_listing_interests_updated_at();
 
 -- Profiles that favorited a listing
-create or replace function public.listing_favorited_by(current_profile_id uuid, selected_listing_id bigint)
+create or replace
+  function public.listing_favorited_by(
+    current_profile_id uuid default null,
+    selected_listing_id bigint default null
+  )
 returns Table (profile_id uuid, full_name text, avatar_url text)
   language plpgsql
   as $$
@@ -33,6 +37,8 @@ begin
     select p.profile_id, p.full_name, p.avatar_url
     from public.profiles p
     join public.profile_listing_interests pli on pli.profile_id = p.profile_id
-    where pli.listing_id = selected_listing_id and pli.active = true and p.profile_id != current_profile_id;
+    where pli.listing_id = selected_listing_id
+      and (current_profile_id IS NULL OR p.profile_id != current_profile_id)
+      and pli.active = true;
 end;
 $$;

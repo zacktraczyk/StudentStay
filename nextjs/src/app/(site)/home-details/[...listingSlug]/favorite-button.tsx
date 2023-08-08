@@ -17,6 +17,7 @@ export default function FavoriteButton({ initial_favorite, listing_id }: Favorit
   const handleFavorite = async () => {
     if (!session) {
       alert('please login to favorite a listing')
+      return
     }
 
     const { error } = await supabase
