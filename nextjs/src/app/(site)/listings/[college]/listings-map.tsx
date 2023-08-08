@@ -1,16 +1,15 @@
-import React, { useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import mapboxgl, { Expression } from 'mapbox-gl'
 import Map, { Layer, MapRef, Source } from 'react-map-gl'
 import useListings from '@/hooks/useListings'
 
 import 'mapbox-gl/dist/mapbox-gl.css'
-// import useSchools from '@/hooks/useSchools'
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || ''
 
 const initialViewState = {
-  longitude: -87.79,
-  latitude: 41.88,
+  longitude: -87.6753,
+  latitude: 42.0565,
   zoom: 14,
 }
 
@@ -52,27 +51,28 @@ function ListingsMap() {
 
   const mapRef = useRef<MapRef>(null)
 
-  const onMapLoad = React.useCallback(() => {
+  const onMapLoad = useCallback(() => {
     // Listing hover
-    let listingID: number | null = null
+    let listing_id: number | null = null
+    if (mapRef.current == null) return
 
     mapRef.current!.on('mousemove', 'listing-points', (e) => {
       mapRef.current!.getCanvas().style.cursor = 'pointer'
 
       if (!e.features || e.features!.length === 0) return
-      if (listingID) {
+      if (listing_id) {
         mapRef.current!.removeFeatureState({
           source: 'listings',
-          id: listingID,
+          id: listing_id,
         })
       }
 
-      listingID = Number(e.features![0].id)
+      listing_id = Number(e.features![0].id)
 
       mapRef.current!.setFeatureState(
         {
           source: 'listings',
-          id: listingID,
+          id: listing_id,
         },
         {
           hover: true,
@@ -81,11 +81,11 @@ function ListingsMap() {
     })
 
     mapRef.current!.on('mouseleave', 'listing-points', () => {
-      if (listingID !== null) {
+      if (listing_id !== null) {
         mapRef.current!.setFeatureState(
           {
             source: 'listings',
-            id: listingID,
+            id: listing_id,
           },
           {
             hover: false,
@@ -93,7 +93,7 @@ function ListingsMap() {
         )
       }
 
-      listingID = null
+      listing_id = null
 
       mapRef.current!.getCanvas().style.cursor = ''
     })
@@ -105,19 +105,19 @@ function ListingsMap() {
     //     mapRef.current!.getCanvas().style.cursor = 'pointer'
 
     //     if (!e.features || e.features!.length === 0) return
-    //     if (listingID) {
+    //     if (listing_id) {
     //       mapRef.current!.removeFeatureState({
     //         source: 'schools',
-    //         id: listingID,
+    //         id: listing_id,
     //       })
     //     }
 
-    //     listingID = Number(e.features![0].id)
+    //     listing_id = Number(e.features![0].id)
 
     //     mapRef.current!.setFeatureState(
     //       {
     //         source: 'schools',
-    //         id: listingID,
+    //         id: listing_id,
     //       },
     //       {
     //         hover: true,
@@ -126,11 +126,11 @@ function ListingsMap() {
     //   })
 
     //   mapRef.current!.on('mouseleave', 'school-points', () => {
-    //     if (listingID !== null) {
+    //     if (listing_id !== null) {
     //       mapRef.current!.setFeatureState(
     //         {
     //           source: 'schools',
-    //           id: listingID,
+    //           id: listing_id,
     //         },
     //         {
     //           hover: false,
@@ -138,7 +138,7 @@ function ListingsMap() {
     //       )
     //     }
 
-    //     listingID = null
+    //     listing_id = null
 
     //     mapRef.current!.getCanvas().style.cursor = ''
     //   })
