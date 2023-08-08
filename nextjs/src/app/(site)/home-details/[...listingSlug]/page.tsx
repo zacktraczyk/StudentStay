@@ -1,14 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
+import { Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { HeartIcon as HeartIconOutline, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import useListing from '@/hooks/useListing'
 import useLikeListing from '@/hooks/useListingLike'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from '@/lib/database.types'
 import { useSupabase } from '@/app/supabase-provider'
 import useLikeListingUpdate from '@/hooks/useListingLikeUpdate'
 
