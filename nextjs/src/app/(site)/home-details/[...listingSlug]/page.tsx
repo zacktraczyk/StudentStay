@@ -1,10 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
-import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconOutline, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
 import useListing from '@/hooks/useListing'
+import useLikeListing from '@/hooks/useListingLike'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { Database } from '@/lib/database.types'
+import { useSupabase } from '@/app/supabase-provider'
+import useLikeListingUpdate from '@/hooks/useListingLikeUpdate'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -12,13 +18,32 @@ function classNames(...classes: string[]) {
 
 export default function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
   const [listingAddress, listingID] = params.listingSlug
-  const { data: listing, isLoading, isError } = useListing(listingID)
+  const { session } = useSupabase()
+  const { data: listing, isLoading, isError } = useListing(Number(listingID))
+
+  const { data: favorited } = useLikeListing({
+    listing_id: Number(listingID),
+    profile_id: session!.user.id,
+  })
+  const likeListingMutation = useLikeListingUpdate()
 
   if (isLoading) {
     return <div className='flex h-60 w-screen items-center justify-center py-16'>loading...</div>
   }
 
   if (isError) return <div className='text-rose-500'>error</div>
+
+  const handleFavorite = async () => {
+    if (!session) {
+      alert('please login to favorite a listing')
+    }
+
+    likeListingMutation.mutate({
+      profile_id: session!.user.id,
+      listing_id: Number(listingID),
+      active: !favorited,
+    })
+  }
 
   return (
     <div className='bg-white'>
@@ -124,14 +149,23 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
                   type='submit'
                   className='flex max-w-xs flex-1 items-center justify-center rounded-md border border-transparent bg-green-800 px-8 py-3 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-offset-2 focus:ring-offset-gray-50 sm:w-full'
                 >
-                  I'm Interested
+                  Does Nothing
                 </button>
 
                 <button
                   type='button'
-                  className='ml-4 flex items-center justify-center rounded-md px-3 py-3 text-gray-400 hover:bg-gray-100 hover:text-gray-500'
+                  className={`ml-4 flex items-center justify-center rounded-md px-3 py-3 ${
+                    favorited
+                      ? 'text-rose-400 hover:text-rose-500'
+                      : 'text-gray-400 hover:text-gray-500'
+                  } hover:bg-gray-100 `}
+                  onClick={handleFavorite}
                 >
-                  <HeartIcon className='h-6 w-6 flex-shrink-0' aria-hidden='true' />
+                  {favorited ? (
+                    <HeartIconSolid className='h-6 w-6 flex-shrink-0' aria-hidden='true' />
+                  ) : (
+                    <HeartIconOutline className='h-6 w-6 flex-shrink-0' aria-hidden='true' />
+                  )}
                   <span className='sr-only'>Add to favorites</span>
                 </button>
               </div>

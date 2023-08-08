@@ -1,6 +1,5 @@
 'use client'
 
-import { FeatureCollection } from 'geojson'
 import { useQuery } from '@tanstack/react-query'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/lib/database.types'

@@ -5,7 +5,9 @@ import { useMap } from 'react-map-gl'
 export default function ListingsPanel() {
   const { data: listings, isLoading, isError } = useListings()
 
-  if (listings) console.log(listings.features[0])
+  console.log(listings)
+
+  if (listings && listings.features) console.log(listings.features[0])
 
   if (isLoading) {
     return (

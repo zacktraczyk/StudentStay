@@ -4,12 +4,14 @@ import { useQuery } from '@tanstack/react-query'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/lib/database.types'
 
-const getListing = async (listingID: string) => {
+type listing_id_type = Database['public']['Tables']['listings']['Insert']['listing_id']
+
+const getListing = async (listing_id: listing_id_type) => {
   const supabase = createClientComponentClient<Database>()
   const { data, error } = await supabase
     .from('listings')
     .select('*')
-    .eq('listing_id', listingID)
+    .eq('listing_id', listing_id)
     .single()
 
   if (error) {
@@ -19,6 +21,6 @@ const getListing = async (listingID: string) => {
   return data
 }
 
-export default function useListing(listingID: string) {
-  return useQuery(['listing', listingID], () => getListing(listingID))
+export default function useListing(listing_id: listing_id_type) {
+  return useQuery(['listing', listing_id], () => getListing(listing_id))
 }
