@@ -2,49 +2,44 @@
 
 import { Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
-import { HeartIcon as HeartIconOutline, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
-import useListing from '@/hooks/useListing'
-import useLikeListing from '@/hooks/useListingLike'
 import { useSupabase } from '@/app/supabase-provider'
-import useLikeListingUpdate from '@/hooks/useListingLikeUpdate'
+import FavoriteButton from './favorite-button'
+import Image from 'next/image'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
-  const [listingAddress, listingID] = params.listingSlug
-  const { session } = useSupabase()
-  const { data: listing, isLoading, isError } = useListing(Number(listingID))
+export default async function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
+  const [_, listing_id] = params.listingSlug
+  const { supabase, session } = useSupabase()
 
-  const { data: favorited } = useLikeListing({
-    listing_id: Number(listingID),
-    profile_id: session!.user.id,
-  })
-  const likeListingMutation = useLikeListingUpdate()
+  // Load listing
+  const { data: listing, error: listing_error } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('listing_id', listing_id)
+    .single()
 
-  if (isLoading) {
-    return <div className='flex h-60 w-screen items-center justify-center py-16'>loading...</div>
+  if (listing == null || listing_error) {
+    throw listing_error
   }
 
-  if (isError) return <div className='text-rose-500'>error</div>
+  // Load favorite
+  let { data: favorited_data, error: favorite_error } = await supabase
+    .from('profile_listing_interests')
+    .select('active')
+    .eq('profile_id', session!.user.id)
+    .eq('listing_id', listing_id)
+    .maybeSingle()
 
-  const handleFavorite = async () => {
-    if (!session) {
-      alert('please login to favorite a listing')
-    }
-
-    likeListingMutation.mutate({
-      profile_id: session!.user.id,
-      listing_id: Number(listingID),
-      active: !favorited,
-    })
+  if (favorite_error) {
+    console.error(favorite_error)
   }
 
   return (
     <div className='bg-white'>
-      <div className='mx-auto max-w-2xl px-4 py-28 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8'>
+      <div className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-1 lg:max-w-7xl lg:px-8'>
         <div className='lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8'>
           {/* Image gallery */}
           <Tab.Group as='div' className='flex flex-col-reverse'>
@@ -60,9 +55,11 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
                       {({ selected }) => (
                         <>
                           <span className='absolute inset-0 overflow-hidden rounded-md'>
-                            <img
+                            <Image
                               src={image}
-                              alt=''
+                              width={500}
+                              height={200}
+                              alt='rental listing preview'
                               className='h-full w-full object-cover object-center'
                             />
                           </span>
@@ -84,7 +81,10 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
               {listing.additional_img_srcs &&
                 listing.additional_img_srcs.map((image, key) => (
                   <Tab.Panel key={key}>
-                    <img
+                    <Image
+                      width={500}
+                      height={200}
+                      alt='house additional preview'
                       src={image}
                       className='h-full w-full object-cover object-center sm:rounded-lg'
                     />
@@ -149,22 +149,10 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
                   Does Nothing
                 </button>
 
-                <button
-                  type='button'
-                  className={`ml-4 flex items-center justify-center rounded-md px-3 py-3 ${
-                    favorited
-                      ? 'text-rose-400 hover:text-rose-500'
-                      : 'text-gray-400 hover:text-gray-500'
-                  } hover:bg-gray-100 `}
-                  onClick={handleFavorite}
-                >
-                  {favorited ? (
-                    <HeartIconSolid className='h-6 w-6 flex-shrink-0' aria-hidden='true' />
-                  ) : (
-                    <HeartIconOutline className='h-6 w-6 flex-shrink-0' aria-hidden='true' />
-                  )}
-                  <span className='sr-only'>Add to favorites</span>
-                </button>
+                <FavoriteButton
+                  initial_favorite={favorited_data?.active || false}
+                  listing_id={Number(listing_id)}
+                />
               </div>
             </form>
 
