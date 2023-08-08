@@ -3,8 +3,7 @@
 import { useSupabase } from '@/app/supabase-provider'
 import { HeartIcon as HeartIconOutline, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid'
-import { profile } from 'console'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 interface FavoriteButtonProps {
   initial_favorite: boolean

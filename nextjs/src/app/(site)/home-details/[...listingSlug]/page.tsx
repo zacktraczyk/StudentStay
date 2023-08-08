@@ -5,6 +5,7 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { useSupabase } from '@/app/supabase-provider'
 import FavoriteButton from './favorite-button'
 import Image from 'next/image'
+import InterestedProfiles from './interested-profiles'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -26,7 +27,7 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
   }
 
   // Load favorite
-  let { data: favorited_data, error: favorite_error } = await supabase
+  const { data: favorited_data, error: favorite_error } = await supabase
     .from('profile_listing_interests')
     .select('active')
     .eq('profile_id', session!.user.id)
@@ -36,6 +37,18 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
   if (favorite_error) {
     console.error(favorite_error)
   }
+
+  // Load favorited by
+  const { data: favorited_by_data, error: favorited_by_error } = await supabase.rpc(
+    'listing_favorited_by',
+    { current_profile_id: porfile_id, selected_listing_id: Number(listing_id) },
+  )
+
+  if (favorited_by_error) {
+    console.error(favorited_by_error)
+  }
+
+  console.log(favorited_by_data)
 
   return (
     <div className='bg-white'>
@@ -164,6 +177,13 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
                 <p>{listing.baths} Baths</p>
                 <p>{listing.square_footage} sqft</p>
               </div>
+            </div>
+
+            {/* Interested Users */}
+            <div className='mt-6'>
+              <h3 className='sr-only'>Interested Users</h3>
+
+              <InterestedProfiles profiles={favorited_by_data} />
             </div>
 
             {/* <section aria-labelledby='details-heading' className='mt-12'>

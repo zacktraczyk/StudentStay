@@ -57,6 +57,8 @@ function ListingsMap() {
     if (mapRef.current == null) return
 
     mapRef.current!.on('mousemove', 'listing-points', (e) => {
+      if (mapRef.current == null) return
+
       mapRef.current!.getCanvas().style.cursor = 'pointer'
 
       if (!e.features || e.features!.length === 0) return

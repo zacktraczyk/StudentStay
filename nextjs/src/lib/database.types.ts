@@ -178,6 +178,16 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      listing_favorited_by: {
+        Args: {
+          selected_listing_id: number
+        }
+        Returns: {
+          profile_id: string
+          full_name: string
+          avatar_url: string
+        }[]
+      }
       listings_with_geojson: {
         Args: Record<PropertyKey, never>
         Returns: Json

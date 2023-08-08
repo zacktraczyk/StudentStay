@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import logo from '../../../public/logo.svg'
+import { useSupabase } from '../supabase-provider'
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -17,6 +18,7 @@ const navigation = [
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { session } = useSupabase()
 
   return (
     <header className='relative inset-x-0 top-0 z-50'>
@@ -52,9 +54,17 @@ export default function Header() {
           ))}
         </div>
         <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
-          <Link href='/login' className='text-sm font-semibold leading-6 text-gray-900'>
-            Log in <span aria-hidden='true'>&rarr;</span>
-          </Link>
+          {!session || !session.user ? (
+            <Link href='/login' className='text-sm font-semibold leading-6 text-gray-900'>
+              Log in <span aria-hidden='true'>&rarr;</span>
+            </Link>
+          ) : (
+            <form action='/auth/signout' method='post'>
+              <button className='text-sm font-semibold leading-6 text-rose-500' type='submit'>
+                Log out
+              </button>
+            </form>
+          )}
         </div>
       </nav>
       <Dialog as='div' className='lg:hidden' open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -88,12 +98,23 @@ export default function Header() {
                 ))}
               </div>
               <div className='py-6'>
-                <Link
-                  href='/login'
-                  className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
-                >
-                  Log in
-                </Link>
+                {!session || !session.user ? (
+                  <Link
+                    href='/login'
+                    className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                  >
+                    Log in &rarr;
+                  </Link>
+                ) : (
+                  <form action='/auth/signout' method='post'>
+                    <button
+                      className='-mx-3 block w-full rounded-lg px-3 py-2.5 text-left text-base font-semibold leading-7 text-rose-500 hover:bg-gray-50'
+                      type='submit'
+                    >
+                      Log out
+                    </button>
+                  </form>
+                )}
               </div>
             </div>
           </div>
