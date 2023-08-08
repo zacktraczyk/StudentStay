@@ -32,7 +32,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
 
       let { data, error, status } = await supabase
         .from('profiles')
-        .select(`full_name, username, website`)
+        .select(`full_name, website`)
         .eq('profile_id', user?.id)
         .single()
 
@@ -43,7 +43,6 @@ export default function AccountForm({ session }: { session: Session | null }) {
       if (data) {
         reset({
           fullName: data.full_name || '',
-          username: data.username || '',
           website: data.website || '',
         })
       }
@@ -64,9 +63,8 @@ export default function AccountForm({ session }: { session: Session | null }) {
       setLoading(true)
 
       let { error } = await supabase.from('profiles').upsert({
-        id: user?.id as string,
+        profile_id: user?.id as string,
         full_name: data.fullName || '',
-        username: data.username || '',
         website: data.website || '',
         updated_at: new Date().toISOString(),
       })

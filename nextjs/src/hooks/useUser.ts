@@ -9,8 +9,8 @@ const getUser = async (userId: string | undefined) => {
 
   let { data, error, status } = await supabase
     .from('profiles')
-    .select(`full_name, username, website, avatar_url`)
-    .eq('id', userId)
+    .select(`full_name, website, avatar_url`)
+    .eq('profile_id', userId)
     .single()
 
   if (error && status !== 406) {

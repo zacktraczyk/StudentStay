@@ -6,13 +6,17 @@ import { Database } from '@/lib/database.types'
 
 const getListing = async (listingID: string) => {
   const supabase = createClientComponentClient<Database>()
-  const { data, error } = await supabase.from('listings').select('*').eq('listing_id', listingID)
+  const { data, error } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('listing_id', listingID)
+    .single()
 
   if (error) {
     throw error
   }
 
-  return data[0]
+  return data
 }
 
 export default function useListing(listingID: string) {

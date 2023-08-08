@@ -5,7 +5,6 @@ import { Disclosure, RadioGroup, Tab } from '@headlessui/react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { HeartIcon, MinusIcon, PlusIcon } from '@heroicons/react/24/outline'
 import useListing from '@/hooks/useListing'
-import { useRouter } from 'next/navigation'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -13,9 +12,6 @@ function classNames(...classes: string[]) {
 
 export default function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
   const [listingAddress, listingID] = params.listingSlug
-
-  console.log(listingAddress, listingID)
-
   const { data: listing, isLoading, isError } = useListing(listingID)
 
   if (isLoading) {
@@ -23,19 +19,6 @@ export default function HomeDetails({ params }: { params: { listingSlug: string[
   }
 
   if (isError) return <div className='text-rose-500'>error</div>
-
-  console.log(listing)
-
-  // const preview_imgs = ([listing.preview_img_src] || []).concat(listing.additional_img_srcs)
-
-  // return (
-  //   <div className='flex flex-col items-center justify-center py-28'>
-  //     <img src={listing.preview_imgs[0]} />
-  //     <h1>{listing.listing_name}</h1>
-  //     <p>{listing.bedroom_count}</p>
-  //     <p>{listing.bath_count}</p>
-  //   </div>
-  // )
 
   return (
     <div className='bg-white'>

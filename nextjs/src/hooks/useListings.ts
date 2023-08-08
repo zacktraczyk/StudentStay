@@ -13,7 +13,7 @@ const getListings = async () => {
     throw error
   }
 
-  return data[0].json_build_object
+  return data
 }
 
 export default function useListings() {

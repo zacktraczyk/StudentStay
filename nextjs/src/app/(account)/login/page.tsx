@@ -35,7 +35,7 @@ export default function Login() {
   }
 
   if (loginMutation.isSuccess) {
-    router.push('/listings-demo')
+    router.push('/listings/northwestern')
   }
 
   return (
