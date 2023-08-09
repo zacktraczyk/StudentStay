@@ -8,6 +8,8 @@ import Image from 'next/image'
 import InterestedProfiles from './interested-profiles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
+import CreateAccountModal from './create-account-modal'
+import { useState } from 'react'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
