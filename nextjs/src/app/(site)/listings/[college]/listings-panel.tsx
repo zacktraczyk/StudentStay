@@ -4,6 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
 import { useMap } from 'react-map-gl'
 
+function truncate(str: string, n: number, useWordBoundary: boolean) {
+  if (str.length <= n) {
+    return str
+  }
+  const subString = str.slice(0, n - 1) // the original check
+  return (useWordBoundary ? subString.slice(0, subString.lastIndexOf(' ')) : subString) + '...'
+}
+
 export default function ListingsPanel() {
   const { data: listings, isLoading, isError } = useListings()
 
@@ -91,7 +99,7 @@ function Listing({
   const handleHover = () => {
     listingsMap?.flyTo({
       center: coordinates,
-      zoom: 14,
+      zoom: 16,
     })
   }
 
@@ -119,7 +127,7 @@ function Listing({
         <div className='p-3'>
           <h3 className='pb-3 text-base font-semibold text-gray-900'>
             <span aria-hidden='true' className='absolute inset-0' />
-            {address_street}
+            {truncate(address_street, 18, true)}
           </h3>
           <div className='grid grid-cols-2 gap-x-8 gap-y-4'>
             <div className='flex w-full items-center justify-center gap-5 text-base text-gray-700'>
