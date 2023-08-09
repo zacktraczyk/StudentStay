@@ -1,6 +1,7 @@
 import useListings from '@/hooks/useListings'
 import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useMap } from 'react-map-gl'
 
@@ -45,24 +46,47 @@ export default function ListingsPanel() {
 
   return (
     <div className='bg-white'>
-      <h2 className='sr-only'>Listings</h2>
-
-      <div className='py-8'>
-        <h3>
-          <span className='font-bold'>{listings.features.length}</span> available apartments near
-          Nothwestern University
-        </h3>
+      {/* Search */}
+      <div className='flex flex-1 justify-center pb-10'>
+        <div className='w-full'>
+          <label htmlFor='search' className='sr-only'>
+            Move In
+          </label>
+          <div className='relative text-gray-400 focus-within:text-gray-600'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
+              <MagnifyingGlassIcon className='h-5 w-5' aria-hidden='true' />
+            </div>
+            <input
+              id='search'
+              className='block w-full rounded-md border-0 bg-gray-100 py-1.5 pl-10 pr-3 text-gray-900 focus:ring-2 focus:ring-white focus:ring-offset-2 sm:text-sm sm:leading-6'
+              placeholder='Search'
+              type='search'
+              name='search'
+            />
+          </div>
+        </div>
       </div>
 
-      <div className='grid grid-cols-1 gap-y-4 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8'>
-        {listings.features &&
-          listings.features.map((listing, key) => (
-            <Listing
-              key={key}
-              {...(listing.properties as ListingProps)}
-              coordinates={[listing.geometry!.coordinates[0], listing.geometry!.coordinates[1]]}
-            />
-          ))}
+      <div className='-mx-10 border-t-2 px-10'>
+        <h2 className='sr-only'>Listings</h2>
+
+        <div className='py-8'>
+          <h3>
+            <span className='font-bold'>{listings.features.length}</span> available apartments near
+            Nothwestern University
+          </h3>
+        </div>
+
+        <div className='grid grid-cols-1 gap-y-4 overflow-y-auto sm:gap-x-6 sm:gap-y-10 lg:grid-cols-2 lg:gap-x-8'>
+          {listings.features &&
+            listings.features.map((listing, key) => (
+              <Listing
+                key={key}
+                {...(listing.properties as ListingProps)}
+                coordinates={[listing.geometry!.coordinates[0], listing.geometry!.coordinates[1]]}
+              />
+            ))}
+        </div>
       </div>
     </div>
   )
@@ -142,15 +166,15 @@ function Listing({
               <FontAwesomeIcon icon={faBath} />
             </div>
 
-            <div className='flex items-center justify-center gap-5 text-base text-gray-700'>
+            <div className='flex items-center justify-center gap-1 text-gray-700'>
               <h4 className='sr-only'>Square Footage</h4>
-              <p>{square_footage} sqft</p>
+              <p className='text-base'>{square_footage}</p>
+              <p className='text-sm'>sqft</p>
             </div>
 
-            <div className='flex items-center justify-center'>
-              <p className='text-base text-gray-700'>
-                ${price.toLocaleString()} <span className='text-sm'>/ mo</span>
-              </p>
+            <div className='flex items-center justify-center gap-1 text-gray-700'>
+              <h4 className='text-base'>${price.toLocaleString()}</h4>
+              <p className='text-sm'>/ mo</p>
             </div>
           </div>
         </div>

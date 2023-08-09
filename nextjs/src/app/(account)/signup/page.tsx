@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import CheckEmailModal from './check-email-modal'
 
 import logo from '../../../../public/logo.svg'
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid'
 
 const formSchema = z
   .object({
@@ -26,6 +27,10 @@ const formSchema = z
   })
 
 type FormSchemaType = z.infer<typeof formSchema>
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ')
+}
 
 export default function SignUp() {
   const supabase = createClientComponentClient()
@@ -83,18 +88,39 @@ export default function SignUp() {
                       htmlFor='email'
                       className='block text-sm font-medium leading-6 text-gray-900'
                     >
-                      Email address
+                      Email
                     </label>
-                    <div className='mt-2'>
+                    <div className='relative mt-2 rounded-md shadow-sm'>
                       <input
-                        id='email'
+                        type='email'
                         {...register('email')}
-                        className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                        name='email'
+                        id='email'
+                        className={classNames(
+                          errors.email
+                            ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500'
+                            : '',
+                          'block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6',
+                        )}
+                        placeholder='you@example.com'
+                        aria-invalid={errors.email ? 'true' : 'false'}
+                        aria-describedby='password-error'
                       />
                       {errors.email && (
-                        <span className='mt-2 text-xs text-rose-500'>{errors.email.message}</span>
+                        <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
+                          <ExclamationCircleIcon
+                            className='h-5 w-5 text-red-500'
+                            aria-hidden='true'
+                          />
+                        </div>
                       )}
                     </div>
+
+                    {errors.email && (
+                      <p className='mt-2 text-sm text-red-600' id='email-error'>
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -104,20 +130,36 @@ export default function SignUp() {
                     >
                       Password
                     </label>
-                    <div className='mt-2'>
+                    <div className='relative mt-2 rounded-md shadow-sm'>
                       <input
-                        id='password'
+                        type='password'
                         {...register('password')}
-                        className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                        name='password'
+                        id='password'
+                        className={classNames(
+                          errors.password
+                            ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500'
+                            : '',
+                          'block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6',
+                        )}
                         aria-invalid={errors.password ? 'true' : 'false'}
+                        aria-describedby='password-error'
                       />
-
                       {errors.password && (
-                        <span className='mt-2 text-xs text-rose-500'>
-                          {errors.password.message}
-                        </span>
+                        <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
+                          <ExclamationCircleIcon
+                            className='h-5 w-5 text-red-500'
+                            aria-hidden='true'
+                          />
+                        </div>
                       )}
                     </div>
+
+                    {errors.password && (
+                      <p className='mt-2 text-sm text-red-600' id='email-error'>
+                        {errors.password.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -127,19 +169,36 @@ export default function SignUp() {
                     >
                       Confirm Password
                     </label>
-                    <div className='mt-2'>
+                    <div className='relative mt-2 rounded-md shadow-sm'>
                       <input
-                        id='password-confirm'
+                        type='password'
                         {...register('passwordConfirm')}
-                        className='block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6'
+                        name='passwordConfirm'
+                        id='password-confirm'
+                        className={classNames(
+                          errors.passwordConfirm
+                            ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500'
+                            : '',
+                          'block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6',
+                        )}
+                        aria-invalid={errors.passwordConfirm ? 'true' : 'false'}
+                        aria-describedby='password-error'
                       />
-
                       {errors.passwordConfirm && (
-                        <span className='mt-2 text-xs text-rose-500'>
-                          {errors.passwordConfirm.message}
-                        </span>
+                        <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
+                          <ExclamationCircleIcon
+                            className='h-5 w-5 text-red-500'
+                            aria-hidden='true'
+                          />
+                        </div>
                       )}
                     </div>
+
+                    {errors.passwordConfirm && (
+                      <p className='mt-2 text-sm text-red-600' id='email-error'>
+                        {errors.passwordConfirm.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
