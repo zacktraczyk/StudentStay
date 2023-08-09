@@ -162,7 +162,7 @@ export default function Header() {
                         <button
                           className={classNames(
                             active ? 'bg-gray-100' : '',
-                            'block w-full px-4 py-2 text-left text-sm text-gray-700',
+                            'block w-full px-4 py-2 text-left text-sm text-rose-500',
                           )}
                           type='submit'
                         >
@@ -214,16 +214,17 @@ export default function Header() {
             <div className='-my-6 divide-y divide-gray-500/10'>
               <div className='space-y-2 py-6'>
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                    onClick={() => setMobileMenuOpen(false)}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
-              <div className='py-6'>
+              <div className='space-y-2 py-6'>
                 {!session || !user ? (
                   <Link
                     href='/login'
@@ -232,14 +233,46 @@ export default function Header() {
                     Log in <FontAwesomeIcon icon={faArrowRight} />
                   </Link>
                 ) : (
-                  <form action='/auth/signout' method='post' className='py-6'>
-                    <button
-                      className='-mx-3 block rounded-lg px-3 py-2.5 text-left text-base font-semibold leading-7 text-rose-500 hover:bg-gray-50'
-                      type='submit'
-                    >
-                      Log out
-                    </button>
-                  </form>
+                  <div className='pb-3'>
+                    <div className='flex items-center'>
+                      <div className='flex-shrink-0'>
+                        <img className='h-10 w-10 rounded-full' src={user.avatar_url} alt='' />
+                      </div>
+                      <div className='ml-3'>
+                        <div className='text-base font-medium text-gray-800'>{user.full_name}</div>
+                        <div className='text-sm font-medium text-gray-500'>{user.email}</div>
+                      </div>
+                      <button
+                        type='button'
+                        className='relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                      >
+                        <span className='absolute -inset-1.5' />
+                        <span className='sr-only'>View notifications</span>
+                        <BellIcon className='h-6 w-6' aria-hidden='true' />
+                      </button>
+                    </div>
+                    <div className='space-y-2 py-6'>
+                      {userNavigation.map((item) => (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-500 hover:bg-gray-50'
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+
+                      <form action='/auth/signout' method='post' className=''>
+                        <button
+                          className='block py-2 text-base font-semibold text-rose-400 hover:bg-gray-100 hover:text-gray-800'
+                          type='submit'
+                        >
+                          Log out
+                        </button>
+                      </form>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
