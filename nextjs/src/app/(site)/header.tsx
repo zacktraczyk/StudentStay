@@ -265,7 +265,7 @@ export default function Header() {
 
                       <form action='/auth/signout' method='post' className=''>
                         <button
-                          className='block py-2 text-base font-semibold text-rose-400 hover:bg-gray-100 hover:text-gray-800'
+                          className='-mx-3 block w-full px-3 py-2 text-left text-base font-semibold text-rose-400 hover:bg-gray-50'
                           type='submit'
                         >
                           Log out
