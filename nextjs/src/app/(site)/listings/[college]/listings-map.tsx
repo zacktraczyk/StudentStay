@@ -29,22 +29,6 @@ const listingLayerStyle = {
   },
 }
 
-// const schoolLayerStyle = {
-//   id: 'school-points',
-//   type: 'circle' as 'circle',
-//   paint: {
-//     'circle-radius': 5,
-//     'circle-stroke-width': 5,
-//     'circle-color': [
-//       'case',
-//       ['boolean', ['feature-state', 'hover'], false],
-//       '#fff',
-//       '#BE03FC',
-//     ] as Expression,
-//     'circle-stroke-color': '#BE03FC',
-//   },
-// }
-
 function ListingsMap() {
   const { data: listings } = useListings()
   // const { data: schools } = useSchools()
@@ -99,51 +83,6 @@ function ListingsMap() {
 
       mapRef.current!.getCanvas().style.cursor = ''
     })
-
-    // School hover
-    //   let schoolID: number | null = null
-
-    //   mapRef.current!.on('mousemove', 'school-points', (e) => {
-    //     mapRef.current!.getCanvas().style.cursor = 'pointer'
-
-    //     if (!e.features || e.features!.length === 0) return
-    //     if (listing_id) {
-    //       mapRef.current!.removeFeatureState({
-    //         source: 'schools',
-    //         id: listing_id,
-    //       })
-    //     }
-
-    //     listing_id = Number(e.features![0].id)
-
-    //     mapRef.current!.setFeatureState(
-    //       {
-    //         source: 'schools',
-    //         id: listing_id,
-    //       },
-    //       {
-    //         hover: true,
-    //       },
-    //     )
-    //   })
-
-    //   mapRef.current!.on('mouseleave', 'school-points', () => {
-    //     if (listing_id !== null) {
-    //       mapRef.current!.setFeatureState(
-    //         {
-    //           source: 'schools',
-    //           id: listing_id,
-    //         },
-    //         {
-    //           hover: false,
-    //         },
-    //       )
-    //     }
-
-    //     listing_id = null
-
-    //     mapRef.current!.getCanvas().style.cursor = ''
-    //   })
   }, [])
 
   return (
@@ -160,11 +99,6 @@ function ListingsMap() {
           <Layer {...listingLayerStyle} />
         </Source>
       )}
-      {/* {schools && (
-        <Source id='schools' type='geojson' data={schools} generateId>
-          <Layer {...schoolLayerStyle} />
-        </Source>
-      )} */}
     </Map>
   )
 }

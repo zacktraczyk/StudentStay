@@ -1,22 +1,36 @@
 import Tooltip from '@mui/material/Tooltip'
 import { useSupabase } from '@/app/supabase-provider'
-import React from 'react'
+import React, { useEffect } from 'react'
+import { Database } from '@/lib/database.types'
 
 interface InterestedProfilesProps {
   listing_id: number
 }
 
-export default async function InterestedProfiles({ listing_id }: InterestedProfilesProps) {
+type lfb_return = Database['public']['Functions']['listing_favorited_by']['Returns']
+
+export default function InterestedProfiles({ listing_id }: InterestedProfilesProps) {
   const { supabase, session } = useSupabase()
 
-  const { data: profiles, error } = await supabase.rpc('listing_favorited_by', {
-    current_profile_id: session?.user.id || undefined,
-    selected_listing_id: Number(listing_id),
-  })
+  const [profiles, setProfiles] = React.useState<lfb_return>([])
 
-  if (error) {
-    console.error(error)
-  }
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      const { data: _profiles, error } = await supabase.rpc('listing_favorited_by', {
+        current_profile_id: session?.user.id || undefined,
+        selected_listing_id: Number(listing_id),
+      })
+
+      if (error) {
+        console.error(error)
+        return
+      }
+
+      setProfiles(_profiles || [])
+    }
+
+    fetchProfiles()
+  }, [listing_id, session?.user.id])
 
   return (
     <div className='mt-6'>

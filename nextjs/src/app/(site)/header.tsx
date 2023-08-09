@@ -59,7 +59,11 @@ export default function Header() {
       if (error) console.error(error)
 
       console.log('header profile data:', data)
-      setUser({ ...data, email: session!.user!.email })
+      setUser({
+        full_name: data?.full_name || 'NAME MISSING',
+        avatar_url: data?.avatar_url || '',
+        email: session!.user!.email || 'MISSING EMAIL',
+      })
     }
 
     if (!session) return

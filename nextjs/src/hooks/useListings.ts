@@ -1,5 +1,6 @@
 'use client'
 
+import { FeatureCollection, Point, GeoJsonProperties } from 'geojson'
 import { useQuery } from '@tanstack/react-query'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/lib/database.types'
@@ -11,8 +12,7 @@ const getListings = async () => {
   if (error) {
     throw error
   }
-
-  return data
+  return data as any as FeatureCollection<Point, GeoJsonProperties>
 }
 
 export default function useListings() {

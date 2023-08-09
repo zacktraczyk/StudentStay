@@ -25,6 +25,14 @@ export default function ListingsPanel() {
     )
   }
 
+  if (!listings || !listings?.features || listings.features.length === 0) {
+    return (
+      <div className='flex h-60 flex-col items-center gap-5 overflow-y-scroll md:h-full'>
+        <h1 className='w-full'>No available listings</h1>
+      </div>
+    )
+  }
+
   return (
     <div className='bg-white'>
       <h2 className='sr-only'>Listings</h2>
@@ -42,7 +50,7 @@ export default function ListingsPanel() {
             <Listing
               key={key}
               {...(listing.properties as ListingProps)}
-              coordinates={listing.geometry!.coordinates}
+              coordinates={[listing.geometry!.coordinates[0], listing.geometry!.coordinates[1]]}
             />
           ))}
       </div>
