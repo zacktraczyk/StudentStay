@@ -1,3 +1,4 @@
+import Tooltip from '@mui/material/Tooltip'
 import { useSupabase } from '@/app/supabase-provider'
 import React from 'react'
 
@@ -18,25 +19,25 @@ export default async function InterestedProfiles({ listing_id }: InterestedProfi
   }
 
   return (
-    <div>
-      <h1 className='py-3 text-2xl'>Users who also like this listing</h1>
+    <div className='mt-6'>
+      <h3 className='py-3 text-lg font-semibold'>Potential Roomates 👀 ✨</h3>
       {profiles && profiles.length > 0 ? (
-        <div className='lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8'>
+        <div className='flex w-full flex-wrap gap-3'>
           {profiles.map((profile) => (
-            <div key={profile.profile_id}>
+            <Tooltip title={profile.full_name || 'MISSING NAME'} key={profile.profile_id} arrow>
               <img
-                className='relative flex h-20 w-20 cursor-pointer items-center justify-center rounded-full border-4 bg-white object-cover text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4'
+                className='relative h-20 w-20 cursor-pointer rounded-full bg-gray-50 object-cover shadow-md hover:shadow-lg'
                 src={
                   profile.avatar_url ||
                   'https://www.reso.org/wp-content/uploads/2020/03/No-Photo-Available-591x591-2.jpg'
                 }
                 alt={profile.full_name}
               />
-            </div>
+            </Tooltip>
           ))}
         </div>
       ) : (
-        <div>No profiles favorited</div>
+        <div className='text-base italic text-gray-500'>No one is interested yet...</div>
       )}
     </div>
   )

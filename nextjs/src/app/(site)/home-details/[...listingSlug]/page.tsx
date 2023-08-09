@@ -6,6 +6,8 @@ import { useSupabase } from '@/app/supabase-provider'
 import FavoriteButton from './favorite-button'
 import Image from 'next/image'
 import InterestedProfiles from './interested-profiles'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -121,26 +123,6 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
               )}
             </div>
 
-            {/* Reviews */}
-            {/* <div className='mt-3'>
-              <h3 className='sr-only'>Reviews</h3>
-              <div className='flex items-center'>
-                <div className='flex items-center'>
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        product.rating > rating ? 'text-green-800' : 'text-gray-300',
-                        'h-5 w-5 flex-shrink-0',
-                      )}
-                      aria-hidden='true'
-                    />
-                  ))}
-                </div>
-                <p className='sr-only'>{product.rating} out of 5 stars</p>
-              </div>
-            </div> */}
-
             <div className='mt-6'>
               <h3 className='sr-only'>Description</h3>
 
@@ -165,19 +147,27 @@ export default async function HomeDetails({ params }: { params: { listingSlug: s
             <div className='mt-6'>
               <h3 className='sr-only'>Home Details</h3>
 
-              <div className='space-y-6 text-base text-gray-700'>
+              <div className='flex items-center gap-5 space-y-6 text-base text-gray-700'>
+                <h4 className='sr-only'>Beds</h4>
+                <FontAwesomeIcon icon={faBed} />
                 <p>{listing.beds} Beds</p>
+              </div>
+
+              <div className='flex items-center gap-5 space-y-6 text-base text-gray-700'>
+                <h4 className='sr-only'>Baths</h4>
+                <FontAwesomeIcon icon={faBath} />
                 <p>{listing.baths} Baths</p>
+              </div>
+
+              <div className='flex items-center gap-5 space-y-6 text-base text-gray-700'>
+                <h4 className='sr-only'>Square Footage</h4>
+                <FontAwesomeIcon icon={faRuler} />
                 <p>{listing.square_footage} sqft</p>
               </div>
             </div>
 
             {/* Interested Users */}
-            <div className='mt-6'>
-              <h3 className='sr-only'>Interested Users</h3>
-
-              <InterestedProfiles listing_id={listing_id} />
-            </div>
+            <InterestedProfiles listing_id={listing_id} />
 
             {/* <section aria-labelledby='details-heading' className='mt-12'>
               <h2 id='details-heading' className='sr-only'>
