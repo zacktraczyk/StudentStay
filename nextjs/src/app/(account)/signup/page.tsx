@@ -27,7 +27,7 @@ const formSchema = z
 
 type FormSchemaType = z.infer<typeof formSchema>
 
-export default function Login() {
+export default function SignUp() {
   const supabase = createClientComponentClient()
   const [openModal, setOpenModal] = useState(false)
 
