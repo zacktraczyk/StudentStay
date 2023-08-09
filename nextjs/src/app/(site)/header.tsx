@@ -1,11 +1,18 @@
 'use client'
 
 import { Fragment, useEffect } from 'react'
-import { Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Menu, Transition, Popover, Dialog, Disclosure } from '@headlessui/react'
+import {
+  Bars3Icon,
+  BellIcon,
+  XMarkIcon,
+  ChevronDownIcon,
+  HeartIcon,
+  AcademicCapIcon,
+  UserIcon,
+} from '@heroicons/react/24/outline'
 
 import { useState } from 'react'
-import { Dialog } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -21,15 +28,38 @@ type Profile = {
   avatar_url: string
 }
 
-const userNavigation = [
-  { name: 'Your Profile', href: '/account' },
-  { name: 'Settings', href: '#' },
-]
+const userNavigation = [{ name: 'Your Profile', href: '/account' }]
 
 const navigation = [
   { name: 'Home', href: '/' },
-  { name: 'Listings', href: '/listings/northwestern' },
-  { name: 'Roomates', href: '/roomates' },
+  {
+    name: 'Listings',
+    two_column_sub_menu: [
+      {
+        name: 'Listings Around Me',
+        description: 'Find listings around your school',
+        href: '/listings/northwestern',
+        icon: AcademicCapIcon,
+      },
+      {
+        name: 'Favorite Listings',
+        description: 'Look back at saved listings',
+        href: '#',
+        icon: HeartIcon,
+      },
+    ],
+  },
+  {
+    name: 'Roomates',
+    two_column_sub_menu: [
+      {
+        name: 'Suggested Roomates',
+        description: 'Curated list of roomates in your area',
+        href: '/roomates',
+        icon: UserIcon,
+      },
+    ],
+  },
   { name: 'About', href: '/about' },
 ]
 
@@ -39,14 +69,11 @@ function classNames(...classes: string[]) {
 
 export default function Header() {
   const { supabase, session } = useSupabase()
-  const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
   const [user, setUser] = useState<Profile | null>(null)
 
+  const pathname = usePathname()
   const isListingView = pathname.includes('/listings')
-  console.log(isListingView)
-  console.log(pathname)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -73,6 +100,7 @@ export default function Header() {
 
   return (
     <header className='relative inset-x-0 top-0 z-50'>
+      {/* Bigger Screen Navbar */}
       <nav
         className={classNames(
           isListingView ? '' : 'max-w-7xl',
@@ -80,23 +108,74 @@ export default function Header() {
         )}
         aria-label='Global'
       >
+        {/* Logo */}
         <div className='flex sm:flex-1'>
           <Link href='/' className='-m-1.5 p-1.5'>
             <span className='sr-only'>Student Stay</span>
             <Image priority className='h-8 w-auto' src={logo} alt='' />
           </Link>
         </div>
+        {/* Navigation */}
         <div className='hidden sm:flex sm:gap-x-12'>
           {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className='text-sm font-semibold leading-6 text-gray-900'
-            >
-              {item.name}
-            </Link>
+            <>
+              {!item.two_column_sub_menu ? (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className='text-sm font-semibold leading-6 text-gray-900'
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <Popover className='relative'>
+                  <Popover.Button className='inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'>
+                    <span>{item.name}</span>
+                    <ChevronDownIcon className='h-5 w-5' aria-hidden='true' />
+                  </Popover.Button>
+
+                  <Transition
+                    as={Fragment}
+                    enter='transition ease-out duration-200'
+                    enterFrom='opacity-0 translate-y-1'
+                    enterTo='opacity-100 translate-y-0'
+                    leave='transition ease-in duration-150'
+                    leaveFrom='opacity-100 translate-y-0'
+                    leaveTo='opacity-0 translate-y-1'
+                  >
+                    <Popover.Panel className='absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4'>
+                      <div className='w-screen max-w-sm flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'>
+                        <div className='grid grid-cols-1 gap-x-6 gap-y-1 p-4'>
+                          {item.two_column_sub_menu.map((item) => (
+                            <div
+                              key={item.name}
+                              className='group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50'
+                            >
+                              <div className='mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white'>
+                                <item.icon
+                                  className='h-6 w-6 text-gray-600 group-hover:text-green-800'
+                                  aria-hidden='true'
+                                />
+                              </div>
+                              <div>
+                                <a href={item.href} className='font-semibold text-gray-900'>
+                                  {item.name}
+                                  <span className='absolute inset-0' />
+                                </a>
+                                <p className='mt-1 text-gray-600'>{item.description}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </Popover.Panel>
+                  </Transition>
+                </Popover>
+              )}
+            </>
           ))}
         </div>
+        {/* Account */}
         {!session ? (
           <div className='flex flex-1 items-center justify-end gap-x-6'>
             <Link
@@ -198,10 +277,13 @@ export default function Header() {
           </button>
         </div>
       </nav>
+
+      {/* Smaller Screen Navbar */}
       <Dialog as='div' className='sm:hidden' open={mobileMenuOpen} onClose={setMobileMenuOpen}>
         <div className='fixed inset-0 z-50' />
         <Dialog.Panel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
           <div className='flex items-center gap-x-6'>
+            {/* Top logo / button */}
             <a href='#' className='-m-1.5 p-1.5'>
               <span className='sr-only'>StudentStay</span>
               <Image priority className='h-8 w-auto' src={logo} alt='' />
@@ -223,18 +305,52 @@ export default function Header() {
               <XMarkIcon className='h-6 w-6' aria-hidden='true' />
             </button>
           </div>
+          {/* navbar links */}
           <div className='mt-6 flow-root'>
             <div className='-my-6 divide-y divide-gray-500/10'>
               <div className='space-y-2 py-6'>
                 {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
+                  <>
+                    {!item.two_column_sub_menu ? (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    ) : (
+                      <Disclosure as='div' className='-mx-3'>
+                        {({ open }) => (
+                          <>
+                            <Disclosure.Button className='flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'>
+                              Product
+                              <ChevronDownIcon
+                                className={classNames(
+                                  open ? 'rotate-180' : '',
+                                  'h-5 w-5 flex-none',
+                                )}
+                                aria-hidden='true'
+                              />
+                            </Disclosure.Button>
+                            <Disclosure.Panel className='mt-2 space-y-2'>
+                              {[...item.two_column_sub_menu].map((item) => (
+                                <Disclosure.Button
+                                  key={item.name}
+                                  as='a'
+                                  href={item.href}
+                                  className='block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                                >
+                                  {item.name}
+                                </Disclosure.Button>
+                              ))}
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    )}
+                  </>
                 ))}
               </div>
               <div className='space-y-2 py-6'>
