@@ -1,4 +1,6 @@
 import useListings from '@/hooks/useListings'
+import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from 'next/link'
 import { useMap } from 'react-map-gl'
 
@@ -114,16 +116,34 @@ function Listing({
             />
           )}
         </div>
-        <div className='flex flex-1 flex-col space-y-2 p-4'>
-          <h3 className='text-sm font-medium text-gray-900'>
+        <div className='p-3'>
+          <h3 className='pb-3 text-base font-semibold text-gray-900'>
             <span aria-hidden='true' className='absolute inset-0' />
-            {building_name}
+            {address_street}
           </h3>
-          <div className='flex flex-1 flex-col justify-end'>
-            <p className='text-sm italic text-gray-500'>Beds: {beds}</p>
-            <p className='text-sm italic text-gray-500'>Baths: {baths}</p>
-            <p className='text-sm italic text-gray-500'>Sqft: {square_footage} ft^2</p>
-            <p className='text-base font-medium text-gray-900'>${price.toLocaleString()} / month</p>
+          <div className='grid grid-cols-2 gap-x-8 gap-y-4'>
+            <div className='flex w-full items-center justify-center gap-5 text-base text-gray-700'>
+              <h4 className='sr-only'>Beds</h4>
+              <p>{beds}</p>
+              <FontAwesomeIcon icon={faBed} />
+            </div>
+
+            <div className='flex items-center justify-center gap-5 text-base text-gray-700'>
+              <h4 className='sr-only'>Baths</h4>
+              <p>{baths}</p>
+              <FontAwesomeIcon icon={faBath} />
+            </div>
+
+            <div className='flex items-center justify-center gap-5 text-base text-gray-700'>
+              <h4 className='sr-only'>Square Footage</h4>
+              <p>{square_footage} sqft</p>
+            </div>
+
+            <div className='flex items-center justify-center'>
+              <p className='text-base text-gray-700'>
+                ${price.toLocaleString()} <span className='text-sm'>/ mo</span>
+              </p>
+            </div>
           </div>
         </div>
       </div>

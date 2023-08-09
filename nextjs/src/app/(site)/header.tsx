@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useEffect } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import { useState } from 'react'
@@ -97,7 +97,7 @@ export default function Header() {
             </Link>
           ))}
         </div>
-        {!session || !user ? (
+        {!session ? (
           <div className='flex flex-1 items-center justify-end gap-x-6'>
             <Link
               href='/login'
@@ -132,7 +132,14 @@ export default function Header() {
                 <Menu.Button className='relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-offset-2'>
                   <span className='absolute -inset-1.5' />
                   <span className='sr-only'>Open user menu</span>
-                  <img className='h-8 w-8 rounded-full object-cover' src={user.avatar_url} alt='' />
+                  <img
+                    className='h-8 w-8 rounded-full object-cover'
+                    src={
+                      user?.avatar_url ??
+                      'https://www.reso.org/wp-content/uploads/2020/03/No-Photo-Available-591x591-2.jpg'
+                    }
+                    alt=''
+                  />
                 </Menu.Button>
               </div>
               <Transition
@@ -199,15 +206,17 @@ export default function Header() {
               <span className='sr-only'>StudentStay</span>
               <Image priority className='h-8 w-auto' src={logo} alt='' />
             </a>
-            <Link
-              href='/signup'
-              className='ml-auto rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
-            >
-              Sign up
-            </Link>
+            {!session && (
+              <Link
+                href='/signup'
+                className='ml-auto rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
+              >
+                Sign up
+              </Link>
+            )}
             <button
               type='button'
-              className='-m-2.5 rounded-md p-2.5 text-gray-700'
+              className='-m-2.5 ml-auto rounded-md p-2.5 text-gray-700'
               onClick={() => setMobileMenuOpen(false)}
             >
               <span className='sr-only'>Close menu</span>
