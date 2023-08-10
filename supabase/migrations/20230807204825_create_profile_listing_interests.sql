@@ -9,19 +9,10 @@ create table public.profile_listing_interests (
 ) tablespace pg_default;
 
 -- This trigger automatically updates the updated_at column when the row is updated.
-create function public.profile_listing_interests_updated_at()
-returns trigger
-  language plpgsql
-  as $$
-begin
-  new.updated_at = now();
-  return new;
-end;
-$$;
-create trigger profile_listing_interests_updated_at
+create trigger on_profile_listing_interests_updated
   before update on public.profile_listing_interests
   for each row
-  execute procedure public.profile_listing_interests_updated_at();
+  execute procedure public.update_timestamp();
 
 -- Profiles that favorited a listing
 create or replace

@@ -21,6 +21,7 @@ import { useSupabase } from '../supabase-provider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { usePathname } from 'next/navigation'
+import { Session } from '@supabase/supabase-js'
 
 type Profile = {
   full_name: string
@@ -28,7 +29,7 @@ type Profile = {
   avatar_url: string
 }
 
-const userNavigation = [{ name: 'Your Profile', href: '/account' }]
+const userNavigation = [{ name: 'Your Profile', href: '/profile' }]
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -67,8 +68,8 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Header() {
-  const { supabase, session } = useSupabase()
+export default function Header({ session }: { session: Session | null }) {
+  const { supabase } = useSupabase()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [user, setUser] = useState<Profile | null>(null)
 
@@ -96,7 +97,7 @@ export default function Header() {
     if (!session) return
 
     fetchProfile()
-  }, [session])
+  }, [session?.user])
 
   return (
     <header className='relative inset-x-0 top-0 z-50'>
@@ -128,7 +129,7 @@ export default function Header() {
                   {item.name}
                 </Link>
               ) : (
-                <Popover className='relative'>
+                <Popover className='relative' key={item.name}>
                   <Popover.Button className='inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900'>
                     <span>{item.name}</span>
                     <ChevronDownIcon className='h-5 w-5' aria-hidden='true' />
@@ -158,10 +159,10 @@ export default function Header() {
                                 />
                               </div>
                               <div>
-                                <a href={item.href} className='font-semibold text-gray-900'>
+                                <Link href={item.href} className='font-semibold text-gray-900'>
                                   {item.name}
                                   <span className='absolute inset-0' />
-                                </a>
+                                </Link>
                                 <p className='mt-1 text-gray-600'>{item.description}</p>
                               </div>
                             </div>
@@ -177,7 +178,7 @@ export default function Header() {
         </div>
         {/* Account */}
         {!session ? (
-          <div className='flex flex-1 items-center justify-end gap-x-6'>
+          <div className='flex flex-1 items-center justify-end gap-x-6' key='nosession'>
             <Link
               href='/login'
               className='hidden sm:block sm:text-sm sm:font-semibold sm:leading-6 sm:text-gray-900'
@@ -195,7 +196,7 @@ export default function Header() {
             </Link>
           </div>
         ) : (
-          <div className=';g:ml-6 hidden flex-1 justify-end sm:flex sm:items-center'>
+          <div className=';g:ml-6 hidden flex-1 justify-end sm:flex sm:items-center' key='session'>
             <button
               type='button'
               className='relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-offset-2'
@@ -248,7 +249,7 @@ export default function Header() {
                   ))}
                   <Menu.Item>
                     {({ active }) => (
-                      <form action='/auth/signout' method='post' className='w-full'>
+                      <form action='/auth/signout' method='post' className='w-full' key='logout'>
                         <button
                           className={classNames(
                             active ? 'bg-gray-100' : '',
@@ -284,10 +285,10 @@ export default function Header() {
         <Dialog.Panel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
           <div className='flex items-center gap-x-6'>
             {/* Top logo / button */}
-            <a href='#' className='-m-1.5 p-1.5'>
+            <Link href='#' className='-m-1.5 p-1.5'>
               <span className='sr-only'>StudentStay</span>
               <Image priority className='h-8 w-auto' src={logo} alt='' />
-            </a>
+            </Link>
             {!session && (
               <Link
                 href='/signup'
@@ -365,7 +366,11 @@ export default function Header() {
                   <div className='pb-3'>
                     <div className='flex items-center'>
                       <div className='flex-shrink-0'>
-                        <img className='h-10 w-10 rounded-full' src={user.avatar_url} alt='' />
+                        <img
+                          className='h-10 w-10 rounded-full object-cover'
+                          src={user.avatar_url}
+                          alt=''
+                        />
                       </div>
                       <div className='ml-3'>
                         <div className='text-base font-medium text-gray-800'>{user.full_name}</div>
@@ -392,7 +397,7 @@ export default function Header() {
                         </Link>
                       ))}
 
-                      <form action='/auth/signout' method='post' className=''>
+                      <form action='/auth/signout' method='post'>
                         <button
                           className='-mx-3 block w-full px-3 py-2 text-left text-base font-semibold text-rose-400 hover:bg-gray-50'
                           type='submit'

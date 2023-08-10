@@ -7,9 +7,10 @@ import { Analytics } from '@vercel/analytics/react'
 import ReactQueryProvider from './react-query-provider'
 import SupabaseProvider from './supabase-provider'
 import { cookies } from 'next/headers'
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createServerComponentClient as _createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/lib/database.types'
 import SupabaseListener from './supabase-listener'
+import { cache } from 'react'
 
 config.autoAddCss = false
 import './globals.css'
@@ -27,8 +28,13 @@ export const metadata = {
 // do not cache this layout
 export const revalidate = 0
 
+export const createServerComponentClient = cache(() => {
+  const cookieStore = cookies()
+  return _createServerComponentClient<Database>({ cookies: () => cookieStore })
+})
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createServerComponentClient()
 
   const {
     data: { session },

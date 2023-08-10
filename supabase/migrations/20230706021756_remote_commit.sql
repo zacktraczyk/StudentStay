@@ -34,6 +34,22 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
 
+
+-- This trigger automatically updates the updated_at column when the row is updated.
+create function public.update_timestamp()
+returns trigger
+  language plpgsql
+  as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+create trigger on_profile_updated
+  before update on public.profiles
+  for each row
+  execute procedure public.update_timestamp();
+
 -- Set up Storage!
 insert into storage.buckets (id, name)
   values ('avatars', 'avatars');
