@@ -18,6 +18,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { usePathname } from 'next/navigation'
 
 import logo from '../../../public/logo.svg'
+import { classNames } from '@/lib/string'
 
 type Profile = {
   full_name: string
@@ -59,10 +60,6 @@ const navigation = [
   },
   { name: 'About', href: '/about' },
 ]
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function Header({ profile }: { profile: Profile | null }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)

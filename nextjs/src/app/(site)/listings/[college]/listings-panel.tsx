@@ -1,17 +1,10 @@
 import useListings from '@/hooks/useListings'
+import { truncate } from '@/lib/string'
 import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Bars3Icon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useMap } from 'react-map-gl'
-
-function truncate(str: string, n: number, useWordBoundary: boolean) {
-  if (str.length <= n) {
-    return str
-  }
-  const subString = str.slice(0, n - 1) // the original check
-  return (useWordBoundary ? subString.slice(0, subString.lastIndexOf(' ')) : subString) + '...'
-}
 
 export default function ListingsPanel() {
   const { data: listings, isLoading, isError } = useListings()
@@ -109,8 +102,6 @@ interface ListingProps {
 function Listing({
   listing_id,
   address_street,
-  address_city,
-  building_name,
   preview_img_src,
   beds,
   baths,

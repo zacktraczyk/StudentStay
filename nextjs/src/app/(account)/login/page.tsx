@@ -10,6 +10,7 @@ import useLogin from '@/hooks/useLoginMutation'
 
 import logo from '../../../../public/logo.svg'
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid'
+import { classNames } from '@/lib/string'
 
 const formSchema = z.object({
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
@@ -20,10 +21,6 @@ const formSchema = z.object({
 })
 
 type FormSchemaType = z.infer<typeof formSchema>
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function Login() {
   const router = useRouter()

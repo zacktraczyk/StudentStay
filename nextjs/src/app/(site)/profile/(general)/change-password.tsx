@@ -1,5 +1,6 @@
 'use client'
 
+import { classNames } from '@/lib/string'
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -28,10 +29,6 @@ const formSchema = z
   })
 
 type FormSchemaType = z.infer<typeof formSchema>
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function ChangePassword() {
   const {

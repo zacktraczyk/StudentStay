@@ -11,6 +11,7 @@ import CheckEmailModal from './check-email-modal'
 
 import logo from '../../../../public/logo.svg'
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid'
+import { classNames } from '@/lib/string'
 
 const formSchema = z
   .object({
@@ -27,10 +28,6 @@ const formSchema = z
   })
 
 type FormSchemaType = z.infer<typeof formSchema>
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function SignUp() {
   const supabase = createClientComponentClient()

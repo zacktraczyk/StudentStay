@@ -1,5 +1,6 @@
 'use client'
 
+import { classNames } from '@/lib/string'
 import {
   BellIcon,
   CreditCardIcon,
@@ -17,10 +18,6 @@ const secondaryNavigation = [
   { name: 'Plan', href: '#', icon: CubeIcon },
   { name: 'Billing', href: '#', icon: CreditCardIcon },
 ]
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function ProfileNavbar() {
   const pathname = usePathname()

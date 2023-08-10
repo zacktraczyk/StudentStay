@@ -14,15 +14,19 @@ create table public.housing_preferences (
   age_max int,
 
   -- NOTE: should be scale maybe ? (e.g. 8pm - 5am usual bedtime, 1-10 messy to clean)
-  sleeping_habits text default 'any' check (sleeping_habits in ('any', 'early_bird', 'night_owl')),
-  noise_sensitivity text default 'any' check (noise_sensitivity in ('any', 'light_sleeper', 'heavy_sleeper')),
-  cleanliness text default 'any' check (cleanliness in ('any', 'neat_freak', 'messy')),
-  social_battery text default 'any' check (social_battery in ('any', 'introvert', 'extrovert')),
+  sleeping_habits int default 3 check (sleeping_habits between 1 and 5),
+  noise_sensitivity int default 3 check (noise_sensitivity between 1 and 5),
 
-  alcohol_preference text default 'any' check (alcohol_preference in ('any', 'not comfortable', 'never', 'socially', 'often')),
-  smoking_preference text default 'any' check (smoking_preference in ('any', 'not comfortable', 'never', 'vape', 'smoke cigarettes')),
-  dog_preference text default 'any' check (dog_preference in ('any', 'not comfortable', 'owner', 'would like')),
-  cat_preference text default 'any' check (cat_preference in ('any', 'not comfortable', 'owner', 'would like')),
+  personal_cleanliness int default 3 check (personal_cleanliness in between 1 and 5),
+  cleanliness_preference int default 3 check (cleanliness_preference in between 1 and 5),
+
+  home_social_inclination text default 3 check (home_social_inclination between 1 and 5),
+  social_battery text default 3 check (social_battery between 1 and 5),
+
+  alcohol_preference text default 3 check (alcohol_preference between 1 and 5),
+  smoking_preference text default 3 check (smoking_preference between 1 and 5),
+  dog_preference text default 3 check (dog_preference between 1 and 5),
+  cat_preference text default 3 check (cat_preference between 1 and 5),
 
   updated_at timestamp with time zone not null default now()
 );

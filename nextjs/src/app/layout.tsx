@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { config } from '@fortawesome/fontawesome-svg-core'
+import { cache } from 'react'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
@@ -10,9 +10,9 @@ import { cookies } from 'next/headers'
 import { createServerComponentClient as _createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/lib/database.types'
 import SupabaseListener from './supabase-listener'
-import { cache } from 'react'
-
+import { config } from '@fortawesome/fontawesome-svg-core'
 config.autoAddCss = false
+
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })

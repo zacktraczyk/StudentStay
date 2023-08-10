@@ -1,19 +1,13 @@
 'use client'
 
 import { Tab } from '@headlessui/react'
-import { StarIcon } from '@heroicons/react/20/solid'
 import { useSupabase } from '@/app/supabase-provider'
 import FavoriteButton from './favorite-button'
 import Image from 'next/image'
 import InterestedProfiles from './interested-profiles'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
-import CreateAccountModal from './create-account-modal'
-import { useState } from 'react'
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
+import { classNames } from '@/lib/string'
 
 export default async function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
   let [_, _listing_id] = params.listingSlug
