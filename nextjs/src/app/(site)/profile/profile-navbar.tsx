@@ -27,7 +27,7 @@ export default function ProfileNavbar() {
 
   return (
     <aside className='flex items-center justify-center overflow-x-auto border-b border-gray-900/5 py-4 lg:block lg:w-64 lg:flex-none lg:border-0 lg:py-20'>
-      <nav className='flex-none px-4 sm:px-6 lg:px-0'>
+      <nav className='w-full flex-none px-4 sm:px-6 md:w-fit lg:px-0'>
         <ul role='list' className='flex gap-x-3 gap-y-1 whitespace-nowrap lg:flex-col'>
           {secondaryNavigation.map((item) => (
             <li key={item.name}>
