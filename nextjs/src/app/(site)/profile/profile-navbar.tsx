@@ -13,7 +13,7 @@ import { usePathname } from 'next/navigation'
 const secondaryNavigation = [
   { name: 'General', href: '', icon: UserCircleIcon },
   { name: 'Matching Profile', href: '/matching-profile', icon: UsersIcon },
-  { name: 'Notifications', href: '#', icon: BellIcon },
+  { name: 'Notifications', href: '/notifications', icon: BellIcon },
   { name: 'Plan', href: '#', icon: CubeIcon },
   { name: 'Billing', href: '#', icon: CreditCardIcon },
 ]

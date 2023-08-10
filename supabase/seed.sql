@@ -342,15 +342,13 @@ INSERT INTO "public"."listings" ("listing_id", "listing_type", "status", "buildi
 -- Data for Name: profiles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO "public"."profiles" ("profile_id", "updated_at", "full_name", "avatar_url", "website") VALUES
-	('57eabdec-302a-43ad-9239-9560729adbe4', NULL, 'Zack Traczyk', 'https://www.zacktraczyk.com/_astro/me.479fe92c_Zjl2cw.webp', NULL),
-	('dfbc50c7-fd09-429d-9d9c-3a5c4949fa26', NULL, 'John Doe', 'https://images.ctfassets.net/hrltx12pl8hq/4f6DfV5DbqaQUSw0uo0mWi/6fbcf889bdef65c5b92ffee86b13fc44/shutterstock_376532611.jpg?fit=fill&w=600&h=400', NULL),
-	('acbd505e-b788-4576-9043-a9dcdb497cf0', NULL, 'George Johnson', 'https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&resize=1200:*', NULL)
+INSERT INTO "public"."profiles" ("profile_id", "full_name", "avatar_url" ) VALUES
+	('57eabdec-302a-43ad-9239-9560729adbe4', 'Zack Traczyk', 'https://www.zacktraczyk.com/_astro/me.479fe92c_Zjl2cw.webp'),
+	('dfbc50c7-fd09-429d-9d9c-3a5c4949fa26', 'John Doe', 'https://images.ctfassets.net/hrltx12pl8hq/4f6DfV5DbqaQUSw0uo0mWi/6fbcf889bdef65c5b92ffee86b13fc44/shutterstock_376532611.jpg?fit=fill&w=600&h=400'),
+	('acbd505e-b788-4576-9043-a9dcdb497cf0', 'George Johnson', 'https://hips.hearstapps.com/hmg-prod/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=0.752xw:1.00xh;0.175xw,0&resize=1200:*')
 ON CONFLICT("profile_id") DO UPDATE
-    SET "updated_at" = EXCLUDED."updated_at",
-        "full_name" = EXCLUDED."full_name",
-        "avatar_url" = EXCLUDED."avatar_url",
-        "website" = EXCLUDED."website";
+    SET "full_name" = EXCLUDED."full_name",
+        "avatar_url" = EXCLUDED."avatar_url";
 
 
 --

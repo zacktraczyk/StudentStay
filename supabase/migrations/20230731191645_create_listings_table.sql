@@ -44,6 +44,15 @@ create table public.listings (
   constraint listings_pkey primary key (listing_id)
 ) tablespace pg_default;
 
+-- Set up Row Level Security (RLS)
+-- See https://supabase.com/docs/guides/auth/row-level-security for more details.
+alter table listings
+  enable row level security;
+
+create policy "Public listings are viewable by everyone." on listings
+  for select using (true);
+
+-- Grab Listings with GeoJSON
 create or replace function listings_with_geojson()
 returns JSON
 language sql
