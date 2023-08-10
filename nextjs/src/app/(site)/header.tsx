@@ -331,9 +331,8 @@ export default function Header({ session }: { session: Session | null }) {
                             </Disclosure.Button>
                             <Disclosure.Panel className='mt-2 space-y-2'>
                               {[...item.two_column_sub_menu].map((sub_item) => (
-                                <Link href={sub_item.href} passHref>
+                                <Link href={sub_item.href} passHref key={sub_item.name}>
                                   <Disclosure.Button
-                                    key={sub_item.name}
                                     as='a'
                                     className='block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                                   >
