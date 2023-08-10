@@ -89,7 +89,9 @@ export default function Header({ session }: { session: Session | null }) {
       console.log('header profile data:', data)
       setUser({
         full_name: data?.full_name || 'NAME MISSING',
-        avatar_url: data?.avatar_url || '',
+        avatar_url:
+          data?.avatar_url ||
+          'https://www.reso.org/wp-content/uploads/2020/03/No-Photo-Available-591x591-2.jpg',
         email: session!.user!.email || 'MISSING EMAIL',
       })
     }
@@ -119,13 +121,9 @@ export default function Header({ session }: { session: Session | null }) {
         {/* Navigation */}
         <div className='hidden sm:flex sm:gap-x-12'>
           {navigation.map((item) => (
-            <>
+            <div key={item.name}>
               {!item.two_column_sub_menu ? (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className='text-sm font-semibold leading-6 text-gray-900'
-                >
+                <Link href={item.href} className='text-sm font-semibold leading-6 text-gray-900'>
                   {item.name}
                 </Link>
               ) : (
@@ -147,23 +145,23 @@ export default function Header({ session }: { session: Session | null }) {
                     <Popover.Panel className='absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4'>
                       <div className='w-screen max-w-sm flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'>
                         <div className='grid grid-cols-1 gap-x-6 gap-y-1 p-4'>
-                          {item.two_column_sub_menu.map((item) => (
+                          {item.two_column_sub_menu.map((sub_item) => (
                             <div
-                              key={item.name}
+                              key={sub_item.name}
                               className='group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50'
                             >
                               <div className='mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white'>
-                                <item.icon
+                                <sub_item.icon
                                   className='h-6 w-6 text-gray-600 group-hover:text-green-800'
                                   aria-hidden='true'
                                 />
                               </div>
                               <div>
-                                <Link href={item.href} className='font-semibold text-gray-900'>
-                                  {item.name}
+                                <Link href={sub_item.href} className='font-semibold text-gray-900'>
+                                  {sub_item.name}
                                   <span className='absolute inset-0' />
                                 </Link>
-                                <p className='mt-1 text-gray-600'>{item.description}</p>
+                                <p className='mt-1 text-gray-600'>{sub_item.description}</p>
                               </div>
                             </div>
                           ))}
@@ -173,7 +171,7 @@ export default function Header({ session }: { session: Session | null }) {
                   </Transition>
                 </Popover>
               )}
-            </>
+            </div>
           ))}
         </div>
         {/* Account */}
@@ -214,10 +212,7 @@ export default function Header({ session }: { session: Session | null }) {
                   <span className='sr-only'>Open user menu</span>
                   <img
                     className='h-8 w-8 rounded-full object-cover'
-                    src={
-                      user?.avatar_url ??
-                      'https://www.reso.org/wp-content/uploads/2020/03/No-Photo-Available-591x591-2.jpg'
-                    }
+                    src={user?.avatar_url}
                     alt=''
                   />
                 </Menu.Button>
@@ -285,7 +280,7 @@ export default function Header({ session }: { session: Session | null }) {
         <Dialog.Panel className='fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10'>
           <div className='flex items-center gap-x-6'>
             {/* Top logo / button */}
-            <Link href='#' className='-m-1.5 p-1.5'>
+            <Link href='/' className='-m-1.5 p-1.5'>
               <span className='sr-only'>StudentStay</span>
               <Image priority className='h-8 w-auto' src={logo} alt='' />
             </Link>
@@ -311,10 +306,9 @@ export default function Header({ session }: { session: Session | null }) {
             <div className='-my-6 divide-y divide-gray-500/10'>
               <div className='space-y-2 py-6'>
                 {navigation.map((item) => (
-                  <>
+                  <div key={item.name}>
                     {!item.two_column_sub_menu ? (
                       <Link
-                        key={item.name}
                         href={item.href}
                         className='-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
                         onClick={() => setMobileMenuOpen(false)}
@@ -336,22 +330,23 @@ export default function Header({ session }: { session: Session | null }) {
                               />
                             </Disclosure.Button>
                             <Disclosure.Panel className='mt-2 space-y-2'>
-                              {[...item.two_column_sub_menu].map((item) => (
-                                <Disclosure.Button
-                                  key={item.name}
-                                  as='a'
-                                  href={item.href}
-                                  className='block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50'
-                                >
-                                  {item.name}
-                                </Disclosure.Button>
+                              {[...item.two_column_sub_menu].map((sub_item) => (
+                                <Link href={sub_item.href} passHref>
+                                  <Disclosure.Button
+                                    key={sub_item.name}
+                                    as='a'
+                                    className='block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-gray-900 hover:bg-gray-50'
+                                  >
+                                    {sub_item.name}
+                                  </Disclosure.Button>
+                                </Link>
                               ))}
                             </Disclosure.Panel>
                           </>
                         )}
                       </Disclosure>
                     )}
-                  </>
+                  </div>
                 ))}
               </div>
               <div className='space-y-2 py-6'>
