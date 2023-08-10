@@ -30,7 +30,7 @@ export default function InterestedProfiles({ listing_id }: InterestedProfilesPro
     }
 
     fetchProfiles()
-  }, [listing_id, session?.user.id])
+  }, [listing_id, session?.user.id, supabase])
 
   return (
     <div className='mt-6'>

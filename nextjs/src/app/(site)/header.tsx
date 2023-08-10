@@ -86,7 +86,6 @@ export default function Header({ session }: { session: Session | null }) {
 
       if (error) console.error(error)
 
-      console.log('header profile data:', data)
       setUser({
         full_name: data?.full_name || 'NAME MISSING',
         avatar_url:
@@ -99,7 +98,7 @@ export default function Header({ session }: { session: Session | null }) {
     if (!session) return
 
     fetchProfile()
-  }, [session?.user])
+  }, [session, supabase])
 
   return (
     <header className='relative inset-x-0 top-0 z-50'>
@@ -229,8 +228,9 @@ export default function Header({ session }: { session: Session | null }) {
                 <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
                   {userNavigation.map((item) => (
                     <Menu.Item key={item.name}>
+                      {/* TODO: Change <a> to Next/Link without breaking Headless UI Menu */}
                       {({ active }) => (
-                        <Link
+                        <a
                           href={item.href}
                           className={classNames(
                             active ? 'bg-gray-100' : '',
@@ -238,7 +238,7 @@ export default function Header({ session }: { session: Session | null }) {
                           )}
                         >
                           {item.name}
-                        </Link>
+                        </a>
                       )}
                     </Menu.Item>
                   ))}
@@ -359,7 +359,7 @@ export default function Header({ session }: { session: Session | null }) {
                 ) : (
                   <div className='pb-3'>
                     <div className='flex items-center'>
-                      <div className='flex-shrink-0'>
+                      <div className='shrink-0'>
                         <img
                           className='h-10 w-10 rounded-full object-cover'
                           src={user.avatar_url}
@@ -372,7 +372,7 @@ export default function Header({ session }: { session: Session | null }) {
                       </div>
                       <button
                         type='button'
-                        className='relative ml-auto flex-shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                        className='relative ml-auto shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
                       >
                         <span className='absolute -inset-1.5' />
                         <span className='sr-only'>View notifications</span>
