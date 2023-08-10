@@ -1,7 +1,9 @@
 'use client'
 
-import { Fragment, useEffect } from 'react'
+import { Fragment, useState } from 'react'
 import { Menu, Transition, Popover, Dialog, Disclosure } from '@headlessui/react'
+import Image from 'next/image'
+import Link from 'next/link'
 import {
   Bars3Icon,
   BellIcon,
@@ -11,17 +13,11 @@ import {
   AcademicCapIcon,
   UserIcon,
 } from '@heroicons/react/24/outline'
-
-import { useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-
-import logo from '../../../public/logo.svg'
-import { useSupabase } from '../supabase-provider'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { usePathname } from 'next/navigation'
-import { Session } from '@supabase/supabase-js'
+
+import logo from '../../../public/logo.svg'
 
 type Profile = {
   full_name: string
@@ -29,7 +25,7 @@ type Profile = {
   avatar_url: string
 }
 
-const userNavigation = [{ name: 'Your Profile', href: '/profile' }]
+const profileNavigation = [{ name: 'Your Profile', href: '/profile' }]
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -68,37 +64,15 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Header({ session }: { session: Session | null }) {
-  const { supabase } = useSupabase()
+export default function Header({ profile }: { profile: Profile | null }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [user, setUser] = useState<Profile | null>(null)
 
   const pathname = usePathname()
   const isListingView = pathname.includes('/listings')
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('full_name, avatar_url')
-        .eq('profile_id', session?.user?.id)
-        .single()
-
-      if (error) console.error(error)
-
-      setUser({
-        full_name: data?.full_name || 'NAME MISSING',
-        avatar_url:
-          data?.avatar_url ||
-          'https://www.reso.org/wp-content/uploads/2020/03/No-Photo-Available-591x591-2.jpg',
-        email: session!.user!.email || 'MISSING EMAIL',
-      })
-    }
-
-    if (!session) return
-
-    fetchProfile()
-  }, [session, supabase])
+  const handleNotificationClick = () => {
+    alert('Sorry! Feature not implemented yet.')
+  }
 
   return (
     <header className='relative inset-x-0 top-0 z-50'>
@@ -174,8 +148,8 @@ export default function Header({ session }: { session: Session | null }) {
           ))}
         </div>
         {/* Account */}
-        {!session ? (
-          <div className='flex flex-1 items-center justify-end gap-x-6' key='nosession'>
+        {!profile ? (
+          <div className='flex flex-1 items-center justify-end gap-x-6' key='noprofile'>
             <Link
               href='/login'
               className='hidden sm:block sm:text-sm sm:font-semibold sm:leading-6 sm:text-gray-900'
@@ -193,10 +167,11 @@ export default function Header({ session }: { session: Session | null }) {
             </Link>
           </div>
         ) : (
-          <div className=';g:ml-6 hidden flex-1 justify-end sm:flex sm:items-center' key='session'>
+          <div className=';g:ml-6 hidden flex-1 justify-end sm:flex sm:items-center' key='profile'>
             <button
               type='button'
               className='relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-offset-2'
+              onClick={() => handleNotificationClick()}
             >
               <span className='absolute -inset-1.5' />
               <span className='sr-only'>View notifications</span>
@@ -208,10 +183,10 @@ export default function Header({ session }: { session: Session | null }) {
               <div>
                 <Menu.Button className='relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-offset-2'>
                   <span className='absolute -inset-1.5' />
-                  <span className='sr-only'>Open user menu</span>
+                  <span className='sr-only'>Open profile menu</span>
                   <img
                     className='h-8 w-8 rounded-full object-cover'
-                    src={user?.avatar_url}
+                    src={profile?.avatar_url}
                     alt=''
                   />
                 </Menu.Button>
@@ -226,7 +201,7 @@ export default function Header({ session }: { session: Session | null }) {
                 leaveTo='transform opacity-0 scale-95'
               >
                 <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                  {userNavigation.map((item) => (
+                  {profileNavigation.map((item) => (
                     <Menu.Item key={item.name}>
                       {/* TODO: Change <a> to Next/Link without breaking Headless UI Menu */}
                       {({ active }) => (
@@ -284,22 +259,24 @@ export default function Header({ session }: { session: Session | null }) {
               <span className='sr-only'>StudentStay</span>
               <Image priority className='h-8 w-auto' src={logo} alt='' />
             </Link>
-            {!session && (
-              <Link
-                href='/signup'
-                className='ml-auto rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
+            <div className='flex items-center gap-x-3.5'>
+              {!profile && (
+                <Link
+                  href='/signup'
+                  className='ml-auto rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
+                >
+                  Sign up
+                </Link>
+              )}
+              <button
+                type='button'
+                className='-m-2.5 ml-auto rounded-md p-2.5 text-gray-700'
+                onClick={() => setMobileMenuOpen(false)}
               >
-                Sign up
-              </Link>
-            )}
-            <button
-              type='button'
-              className='-m-2.5 ml-auto rounded-md p-2.5 text-gray-700'
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              <span className='sr-only'>Close menu</span>
-              <XMarkIcon className='h-6 w-6' aria-hidden='true' />
-            </button>
+                <span className='sr-only'>Close menu</span>
+                <XMarkIcon className='h-6 w-6' aria-hidden='true' />
+              </button>
+            </div>
           </div>
           {/* navbar links */}
           <div className='mt-6 flow-root'>
@@ -349,7 +326,7 @@ export default function Header({ session }: { session: Session | null }) {
                 ))}
               </div>
               <div className='space-y-2 py-6'>
-                {!session || !user ? (
+                {!profile ? (
                   <Link
                     href='/login'
                     className='-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'
@@ -362,17 +339,20 @@ export default function Header({ session }: { session: Session | null }) {
                       <div className='shrink-0'>
                         <img
                           className='h-10 w-10 rounded-full object-cover'
-                          src={user.avatar_url}
+                          src={profile.avatar_url}
                           alt=''
                         />
                       </div>
                       <div className='ml-3'>
-                        <div className='text-base font-medium text-gray-800'>{user.full_name}</div>
-                        <div className='text-sm font-medium text-gray-500'>{user.email}</div>
+                        <div className='text-base font-medium text-gray-800'>
+                          {profile.full_name}
+                        </div>
+                        <div className='text-sm font-medium text-gray-500'>{profile.email}</div>
                       </div>
                       <button
                         type='button'
                         className='relative ml-auto shrink-0 rounded-full bg-white p-1 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                        onClick={() => handleNotificationClick()}
                       >
                         <span className='absolute -inset-1.5' />
                         <span className='sr-only'>View notifications</span>
@@ -380,7 +360,7 @@ export default function Header({ session }: { session: Session | null }) {
                       </button>
                     </div>
                     <div className='space-y-2 py-6'>
-                      {userNavigation.map((item) => (
+                      {profileNavigation.map((item) => (
                         <Link
                           key={item.name}
                           href={item.href}
