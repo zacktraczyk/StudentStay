@@ -20,12 +20,14 @@ create table public.listings (
   beds integer,
 
   preview_img_src text,
+  -- TODO: split out additional images into separate table
   additional_img_srcs text[],
 
   ranged_price boolean not null, -- is price a range or single value
   price int, -- monthly cost if estimatedPrice is false
   price_estimate_low int, -- monthly cost if estimatedPrice is true
   price_estimate_high int, -- monthly cost if estimatedPrice is true
+  listing_start_date timestamp with time zone,
 
   -- Should be broken out "lister" or "PropertyOwner" table
   listing_contact_name text,
@@ -38,7 +40,6 @@ create table public.listings (
 
   created_at timestamp with time zone not null default timezone ('utc'::text, now()),
   listed_at timestamp with time zone not null default timezone ('utc'::text, now()),
-  listing_start_date timestamp with time zone,
   updated_at timestamp with time zone not null default timezone ('utc'::text, now()),
 
   constraint listings_pkey primary key (listing_id)

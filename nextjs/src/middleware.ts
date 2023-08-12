@@ -8,16 +8,16 @@ export async function middleware(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user && req.nextUrl.pathname == '/profile') {
-    return NextResponse.redirect(new URL('/', req.url))
+  if (!user && req.nextUrl.pathname.startsWith('/profile')) {
+    return NextResponse.rewrite(new URL('/', req.url))
   }
 
   if ((user && req.nextUrl.pathname == '/login') || req.nextUrl.pathname == '/signup') {
-    return NextResponse.redirect(new URL('/', req.url))
+    return NextResponse.rewrite(new URL('/', req.url))
   }
   return res
 }
 
 export const config = {
-  matcher: ['/', '/profile'],
+  matcher: ['/profile:path*', '/login', '/signup'],
 }

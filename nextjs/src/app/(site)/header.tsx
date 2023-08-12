@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useState } from 'react'
+import { Fragment, RefObject, forwardRef, useState } from 'react'
 import { Menu, Transition, Popover, Dialog, Disclosure } from '@headlessui/react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -61,6 +61,26 @@ const navigation = [
   { name: 'About', href: '/about' },
 ]
 
+interface MyLinkProps {
+  href: string
+  children: React.ReactNode
+  [x: string]: any
+}
+
+const MyLink = forwardRef((props: MyLinkProps, ref) => {
+  let { href, children, ...rest } = props
+  return (
+    <Link legacyBehavior href={href}>
+      {/* TODO: Fix this cursed type fix */}
+      <a ref={ref as RefObject<HTMLAnchorElement>} {...rest}>
+        {children}
+      </a>
+    </Link>
+  )
+})
+
+MyLink.displayName = 'MyLink'
+
 export default function Header({ profile }: { profile: Profile | null }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
@@ -113,30 +133,33 @@ export default function Header({ profile }: { profile: Profile | null }) {
                     leaveTo='opacity-0 translate-y-1'
                   >
                     <Popover.Panel className='absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4'>
-                      <div className='w-screen max-w-sm flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'>
-                        <div className='grid grid-cols-1 gap-x-6 gap-y-1 p-4'>
-                          {item.two_column_sub_menu.map((sub_item) => (
-                            <div
-                              key={sub_item.name}
-                              className='group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50'
-                            >
-                              <div className='mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white'>
-                                <sub_item.icon
-                                  className='h-6 w-6 text-gray-600 group-hover:text-green-800'
-                                  aria-hidden='true'
-                                />
-                              </div>
-                              <div>
-                                <Link href={sub_item.href} className='font-semibold text-gray-900'>
-                                  {sub_item.name}
-                                  <span className='absolute inset-0' />
-                                </Link>
-                                <p className='mt-1 text-gray-600'>{sub_item.description}</p>
-                              </div>
-                            </div>
-                          ))}
+                      {({ close }) => (
+                        <div className='w-screen max-w-sm flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5'>
+                          <div className='grid grid-cols-1 gap-x-6 gap-y-1 p-4'>
+                            {item.two_column_sub_menu.map((sub_item) => (
+                              <MyLink
+                                href={sub_item.href}
+                                onClick={() => close()}
+                                key={sub_item.name}
+                              >
+                                <div className='group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50'>
+                                  <div className='mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white'>
+                                    <sub_item.icon
+                                      className='h-6 w-6 text-gray-600 group-hover:text-green-800'
+                                      aria-hidden='true'
+                                    />
+                                  </div>
+                                  <div>
+                                    <p className='font-semibold text-gray-900'>{sub_item.name}</p>
+                                    <span className='absolute inset-0' />
+                                    <p className='mt-1 text-gray-600'>{sub_item.description}</p>
+                                  </div>
+                                </div>
+                              </MyLink>
+                            ))}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </Popover.Panel>
                   </Transition>
                 </Popover>
@@ -256,18 +279,18 @@ export default function Header({ profile }: { profile: Profile | null }) {
               <span className='sr-only'>StudentStay</span>
               <Image priority className='h-8 w-auto' src={logo} alt='' />
             </Link>
-            <div className='flex items-center gap-x-3.5'>
+            <div className='ml-auto flex items-center gap-x-6'>
               {!profile && (
                 <Link
                   href='/signup'
-                  className='ml-auto rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
+                  className='rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
                 >
                   Sign up
                 </Link>
               )}
               <button
                 type='button'
-                className='-m-2.5 ml-auto rounded-md p-2.5 text-gray-700'
+                className='-m-2.5 rounded-md p-2.5 text-gray-700'
                 onClick={() => setMobileMenuOpen(false)}
               >
                 <span className='sr-only'>Close menu</span>
@@ -294,7 +317,7 @@ export default function Header({ profile }: { profile: Profile | null }) {
                         {({ open }) => (
                           <>
                             <Disclosure.Button className='flex w-full items-center justify-between rounded-lg py-2 pl-3 pr-3.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50'>
-                              Product
+                              {item.name}
                               <ChevronDownIcon
                                 className={classNames(
                                   open ? 'rotate-180' : '',

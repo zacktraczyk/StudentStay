@@ -366,6 +366,12 @@ INSERT INTO "public"."profile_listing_interests" ("profile_id", "listing_id", "a
 	('acbd505e-b788-4576-9043-a9dcdb497cf0', 70, true, '2023-08-09 07:02:05.531431+00'),
 	('acbd505e-b788-4576-9043-a9dcdb497cf0', 67, true, '2023-08-09 07:02:09.755675+00');
 
+--
+-- Data for Name: listings; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO "public"."schools" ("school_id","slug","school_name","description","address_full","address_street","address_city","address_state","address_zipcode","location","search_area_upper","search_area_lower","logo_img_src") VALUES
+(1,'northwestern','Northwestern University', NULL, NULL, NULL, NULL, NULL, NULL,'0101000020E6100000AC1C5A643B07454048BF7D1D38EB55C0', NULL, NULL, 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Northwestern_Wildcats_logo.svg/1330px-Northwestern_Wildcats_logo.svg.png');
 
 --
 -- Data for Name: buckets; Type: TABLE DATA; Schema: storage; Owner: supabase_storage_admin

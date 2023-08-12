@@ -9,6 +9,76 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      housing_preferences: {
+        Row: {
+          age_max: number | null
+          age_min: number | null
+          alcohol_preference: number | null
+          budget_max: number | null
+          budget_min: number | null
+          cat_preference: number | null
+          cleanliness_preference: number | null
+          dog_preference: number | null
+          home_social_inclination: number | null
+          noise_sensitivity: number | null
+          personal_cleanliness: number | null
+          prefered_gender: string | null
+          private_preferences: boolean | null
+          profile_id: string
+          sleeping_habits: number | null
+          smoking_preference: number | null
+          social_battery: number | null
+          updated_at: string
+        }
+        Insert: {
+          age_max?: number | null
+          age_min?: number | null
+          alcohol_preference?: number | null
+          budget_max?: number | null
+          budget_min?: number | null
+          cat_preference?: number | null
+          cleanliness_preference?: number | null
+          dog_preference?: number | null
+          home_social_inclination?: number | null
+          noise_sensitivity?: number | null
+          personal_cleanliness?: number | null
+          prefered_gender?: string | null
+          private_preferences?: boolean | null
+          profile_id: string
+          sleeping_habits?: number | null
+          smoking_preference?: number | null
+          social_battery?: number | null
+          updated_at?: string
+        }
+        Update: {
+          age_max?: number | null
+          age_min?: number | null
+          alcohol_preference?: number | null
+          budget_max?: number | null
+          budget_min?: number | null
+          cat_preference?: number | null
+          cleanliness_preference?: number | null
+          dog_preference?: number | null
+          home_social_inclination?: number | null
+          noise_sensitivity?: number | null
+          personal_cleanliness?: number | null
+          prefered_gender?: string | null
+          private_preferences?: boolean | null
+          profile_id?: string
+          sleeping_habits?: number | null
+          smoking_preference?: number | null
+          social_battery?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "housing_preferences_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["profile_id"]
+          }
+        ]
+      }
       listings: {
         Row: {
           additional_img_srcs: string[] | null
@@ -146,23 +216,32 @@ export interface Database {
         Row: {
           avatar_url: string | null
           full_name: string | null
+          instagram_profile: string | null
           profile_id: string
+          school_id: number | null
+          tictok_profile: string | null
+          twitter_profile: string | null
           updated_at: string | null
-          website: string | null
         }
         Insert: {
           avatar_url?: string | null
           full_name?: string | null
+          instagram_profile?: string | null
           profile_id: string
+          school_id?: number | null
+          tictok_profile?: string | null
+          twitter_profile?: string | null
           updated_at?: string | null
-          website?: string | null
         }
         Update: {
           avatar_url?: string | null
           full_name?: string | null
+          instagram_profile?: string | null
           profile_id?: string
+          school_id?: number | null
+          tictok_profile?: string | null
+          twitter_profile?: string | null
           updated_at?: string | null
-          website?: string | null
         }
         Relationships: [
           {
@@ -170,8 +249,62 @@ export interface Database {
             columns: ["profile_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_school_id_fkey"
+            columns: ["school_id"]
+            referencedRelation: "schools"
+            referencedColumns: ["school_id"]
           }
         ]
+      }
+      schools: {
+        Row: {
+          address_city: string | null
+          address_full: string | null
+          address_state: string | null
+          address_street: string | null
+          address_zipcode: string | null
+          description: string | null
+          location: unknown | null
+          logo_img_src: string | null
+          school_id: number
+          school_name: string
+          search_area_lower: unknown | null
+          search_area_upper: unknown | null
+          slug: string
+        }
+        Insert: {
+          address_city?: string | null
+          address_full?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zipcode?: string | null
+          description?: string | null
+          location?: unknown | null
+          logo_img_src?: string | null
+          school_id?: number
+          school_name: string
+          search_area_lower?: unknown | null
+          search_area_upper?: unknown | null
+          slug: string
+        }
+        Update: {
+          address_city?: string | null
+          address_full?: string | null
+          address_state?: string | null
+          address_street?: string | null
+          address_zipcode?: string | null
+          description?: string | null
+          location?: unknown | null
+          logo_img_src?: string | null
+          school_id?: number
+          school_name?: string
+          search_area_lower?: unknown | null
+          search_area_upper?: unknown | null
+          slug?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -191,6 +324,12 @@ export interface Database {
       }
       listings_with_geojson: {
         Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      school_with_geojson: {
+        Args: {
+          selected_school_slug: string
+        }
         Returns: Json
       }
     }

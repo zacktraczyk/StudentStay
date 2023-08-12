@@ -2,7 +2,6 @@
 
 import { MapProvider } from 'react-map-gl'
 import ListingsMap from './listings-map'
-import { useState } from 'react'
 import ListingsPanel from './listings-panel'
 
 export default function Listings({ params }: { params: { college: string } }) {

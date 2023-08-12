@@ -17,16 +17,16 @@ create table public.housing_preferences (
   sleeping_habits int default 3 check (sleeping_habits between 1 and 5),
   noise_sensitivity int default 3 check (noise_sensitivity between 1 and 5),
 
-  personal_cleanliness int default 3 check (personal_cleanliness in between 1 and 5),
-  cleanliness_preference int default 3 check (cleanliness_preference in between 1 and 5),
+  personal_cleanliness int default 3 check (personal_cleanliness between 1 and 5),
+  cleanliness_preference int default 3 check (cleanliness_preference between 1 and 5),
 
-  home_social_inclination text default 3 check (home_social_inclination between 1 and 5),
-  social_battery text default 3 check (social_battery between 1 and 5),
+  home_social_inclination int default 3 check (home_social_inclination between 1 and 5),
+  social_battery int default 3 check (social_battery between 1 and 5),
 
-  alcohol_preference text default 3 check (alcohol_preference between 1 and 5),
-  smoking_preference text default 3 check (smoking_preference between 1 and 5),
-  dog_preference text default 3 check (dog_preference between 1 and 5),
-  cat_preference text default 3 check (cat_preference between 1 and 5),
+  alcohol_preference int default 3 check (alcohol_preference between 1 and 5),
+  smoking_preference int default 3 check (smoking_preference between 1 and 5),
+  dog_preference int default 3 check (dog_preference between 1 and 5),
+  cat_preference int default 3 check (cat_preference between 1 and 5),
 
   updated_at timestamp with time zone not null default now()
 );

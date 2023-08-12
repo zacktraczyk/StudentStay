@@ -1,3 +1,5 @@
+'use client'
+
 import useListings from '@/hooks/useListings'
 import { truncate } from '@/lib/string'
 import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
