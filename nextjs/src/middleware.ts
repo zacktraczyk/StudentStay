@@ -12,7 +12,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.rewrite(new URL('/', req.url))
   }
 
-  if ((user && req.nextUrl.pathname == '/login') || req.nextUrl.pathname == '/signup') {
+  if (user && (req.nextUrl.pathname == '/login' || req.nextUrl.pathname == '/signup')) {
     return NextResponse.rewrite(new URL('/', req.url))
   }
   return res

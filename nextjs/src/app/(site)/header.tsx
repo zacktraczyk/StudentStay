@@ -67,6 +67,7 @@ interface MyLinkProps {
   [x: string]: any
 }
 
+// fix for nextjs Link navigate nad HeadlessUI Popover close at the same time
 const MyLink = forwardRef((props: MyLinkProps, ref) => {
   let { href, children, ...rest } = props
   return (
