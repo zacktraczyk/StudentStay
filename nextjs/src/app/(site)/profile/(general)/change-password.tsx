@@ -37,7 +37,7 @@ export default function ChangePassword() {
     formState: { errors },
   } = useForm<FormSchemaType>({ resolver: zodResolver(formSchema) })
 
-  const handleRegister: SubmitHandler<FormSchemaType> = async (data) => {
+  const handlePasswordChange: SubmitHandler<FormSchemaType> = async (data) => {
     alert('Sorry! Feature not implemented yet. Cannot change password')
   }
 
@@ -50,7 +50,7 @@ export default function ChangePassword() {
         </p>
       </div>
 
-      <form className='md:col-span-2' onSubmit={handleSubmit(handleRegister)}>
+      <form className='md:col-span-2' onSubmit={handleSubmit(handlePasswordChange)}>
         <div className='grid grid-cols-1 gap-x-6 gap-y-8 sm:max-w-xl sm:grid-cols-6'>
           <div className='col-span-full'>
             <label

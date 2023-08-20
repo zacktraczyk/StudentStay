@@ -72,8 +72,9 @@ const MyLink = forwardRef((props: MyLinkProps, ref) => {
   let { href, children, ...rest } = props
   return (
     <Link legacyBehavior href={href}>
-      {/* TODO: Fix this cursed type fix */}
-      <a ref={ref as RefObject<HTMLAnchorElement>} {...rest}>
+      {/*
+      // @ts-ignore */}
+      <a ref={ref} {...rest}>
         {children}
       </a>
     </Link>

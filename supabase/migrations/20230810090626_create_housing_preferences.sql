@@ -42,7 +42,7 @@ create policy "Public housing preferences are viewable by everyone." on housing_
 create policy "Users can insert their own housing preferences." on housing_preferences
   for insert with check (auth.uid() = profile_id);
 
-create policy "Users can update own housing preferences." on profiles
+create policy "Users can update own housing preferences." on housing_preferences
   for update using (auth.uid() = profile_id);
 
 -- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
