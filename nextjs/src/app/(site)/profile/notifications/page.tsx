@@ -4,7 +4,7 @@ export default function Notifications() {
       <form>
         <div className='border-b border-gray-900/10 pb-12'>
           <h2 className='text-base font-semibold leading-7 text-gray-900'>Notifications</h2>
-          <p className='mt-1 text-sm leading-6 text-gray-600'>
+          <p className='mt-1 text-sm leading-6 text-gray-400'>
             We&apos;ll always let you know about important changes, but you pick what else you want
             to hear about.
           </p>
@@ -73,7 +73,7 @@ export default function Notifications() {
               <legend className='text-sm font-semibold leading-6 text-gray-900'>
                 Push Notifications
               </legend>
-              <p className='mt-1 text-sm leading-6 text-gray-600'>
+              <p className='mt-1 text-sm leading-6 text-gray-400'>
                 These are delivered via SMS to your mobile phone.
               </p>
               <div className='mt-6 space-y-6'>

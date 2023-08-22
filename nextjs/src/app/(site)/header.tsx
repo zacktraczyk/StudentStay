@@ -12,6 +12,8 @@ import {
   HeartIcon,
   AcademicCapIcon,
   UserIcon,
+  ShoppingBagIcon,
+  BanknotesIcon,
 } from '@heroicons/react/24/outline'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
@@ -58,7 +60,23 @@ const navigation = [
       },
     ],
   },
-  { name: 'About', href: '/about' },
+  {
+    name: 'Marketplace',
+    two_column_sub_menu: [
+      {
+        name: 'Buy',
+        description: 'Buy items from other students',
+        href: '/marketplace/buy',
+        icon: ShoppingBagIcon,
+      },
+      {
+        name: 'Sell',
+        description: 'Sell funiture and other items',
+        href: '/marketplace/buy',
+        icon: BanknotesIcon,
+      },
+    ],
+  },
 ]
 
 interface MyLinkProps {

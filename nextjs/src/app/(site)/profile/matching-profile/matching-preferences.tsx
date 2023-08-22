@@ -108,8 +108,6 @@ export default function MatchingPreferences({ initialPreferences }: MatchingPref
   )
 
   const handlePreferencesUpdate = async () => {
-    console.log('update preferences for user: ', session!.user.id)
-
     const { error } = await supabase
       .from('housing_preferences')
       .update({
@@ -133,18 +131,22 @@ export default function MatchingPreferences({ initialPreferences }: MatchingPref
   }
 
   return (
-    <div>
-      <Slider
-        {...matchingPreferencesDescriptions.sleepingHabits}
-        sliderValue={sleepingHabits}
-        setSliderValue={setSleepingHabits}
-      />
+    <div className='divide-y divide-gray-300'>
+      <div className='py-12'>
+        <h4 className='text font-semibold leading-6'>Your Lifestyle</h4>
+        <p className='mt-1 pb-8 text-sm leading-6 text-gray-400'>How you prefer to live at home.</p>
+        <Slider
+          {...matchingPreferencesDescriptions.sleepingHabits}
+          sliderValue={sleepingHabits}
+          setSliderValue={setSleepingHabits}
+        />
 
-      <Slider
-        {...matchingPreferencesDescriptions.noiseSensitivity}
-        sliderValue={noiseSensitivity}
-        setSliderValue={setNoiseSensitivity}
-      />
+        <Slider
+          {...matchingPreferencesDescriptions.noiseSensitivity}
+          sliderValue={noiseSensitivity}
+          setSliderValue={setNoiseSensitivity}
+        />
+      </div>
 
       <Slider
         {...matchingPreferencesDescriptions.personalCleanliness}
@@ -220,9 +222,9 @@ function Slider(props: SliderProps) {
   const sliderDescriptions = props.sliderDescriptions || ['1', '2', '3', '4', '5']
 
   return (
-    <div className='flex w-full flex-col space-y-2 py-10'>
+    <div className='flex w-full flex-col space-y-2 py-20'>
       <h4 className='text-sm font-semibold leading-6 text-gray-900'>{inputName}</h4>
-      <p className='mt-1 pb-8 text-sm leading-6 text-gray-600'>{inputDescription}</p>
+      <p className='mt-1 pb-8 text-sm leading-6 text-gray-400'>{inputDescription}</p>
 
       <input
         type='range'
