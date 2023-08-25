@@ -45,7 +45,9 @@ export default function PublicProfileHeader({ profile }: { profile: Profile }) {
             <div className='mt-6 min-w-0 flex-1 sm:hidden md:block'>
               <h1 className='truncate text-2xl font-bold text-gray-900'>
                 {profile.full_name}
-                <span className='text-base font-normal text-gray-700'> ({profile.pronouns})</span>
+                {profile.pronouns && profile.pronouns.length > 1 && (
+                  <span className='text-base font-normal text-gray-700'> ({profile.pronouns})</span>
+                )}
               </h1>
             </div>
             <div className='mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-x-4 sm:space-y-0'>

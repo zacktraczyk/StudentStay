@@ -9,8 +9,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBath, faBed, faRuler } from '@fortawesome/free-solid-svg-icons'
 import { classNames } from '@/lib/string'
 
-export default async function HomeDetails({ params }: { params: { listingSlug: string[] } }) {
-  let [_, _listing_id] = params.listingSlug
+export default async function HomeDetails({
+  params: { listing_id: _listing_id },
+}: {
+  params: { listing_id: string }
+}) {
   const listing_id = Number(_listing_id)
   const { supabase, session } = useSupabase()
 

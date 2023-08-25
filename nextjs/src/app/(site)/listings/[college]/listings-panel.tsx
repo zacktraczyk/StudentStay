@@ -120,13 +120,13 @@ function Listing({
     })
   }
 
-  const hyphenatedAddress = address_street
-    .replace(/\s+/g, '-')
-    .replace(/[^A-Za-z0-9\-]/g, '')
-    .toLowerCase()
+  // const hyphenatedAddress = address_street
+  //   .replace(/\s+/g, '-')
+  //   .replace(/[^A-Za-z0-9\-]/g, '')
+  //   .toLowerCase()
 
   return (
-    <Link href={`/home-details/${hyphenatedAddress}/${listing_id}`}>
+    <Link href={`/home-details/${listing_id}`}>
       <div
         key={listing_id}
         className='group relative flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white'

@@ -8,6 +8,11 @@ interface SocialsProps {
 export default function PublicSocials({ socials }: { socials: SocialsProps }) {
   console.log('socials:', socials)
   const { instagram_profile, tictok_profile, snapchat_profile, facebook_profile } = socials
+
+  if (!instagram_profile && !tictok_profile && !snapchat_profile && !facebook_profile) {
+    return null
+  }
+
   return (
     <div className='py-8'>
       <h1 className='text-lg font-bold'>Socials</h1>
