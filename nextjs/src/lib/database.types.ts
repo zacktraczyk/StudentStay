@@ -215,32 +215,38 @@ export interface Database {
       profiles: {
         Row: {
           avatar_url: string | null
+          facebook_profile: string | null
           full_name: string | null
           instagram_profile: string | null
           profile_id: string
+          pronouns: string | null
           school_id: number | null
+          snapchat_profile: string | null
           tictok_profile: string | null
-          twitter_profile: string | null
           updated_at: string | null
         }
         Insert: {
           avatar_url?: string | null
+          facebook_profile?: string | null
           full_name?: string | null
           instagram_profile?: string | null
           profile_id: string
+          pronouns?: string | null
           school_id?: number | null
+          snapchat_profile?: string | null
           tictok_profile?: string | null
-          twitter_profile?: string | null
           updated_at?: string | null
         }
         Update: {
           avatar_url?: string | null
+          facebook_profile?: string | null
           full_name?: string | null
           instagram_profile?: string | null
           profile_id?: string
+          pronouns?: string | null
           school_id?: number | null
+          snapchat_profile?: string | null
           tictok_profile?: string | null
-          twitter_profile?: string | null
           updated_at?: string | null
         }
         Relationships: [

@@ -142,9 +142,9 @@ function Listing({
           )}
         </div>
         <div className='p-3'>
-          <h3 className='pb-3 text-base font-semibold text-gray-900'>
+          <h3 className='truncate pb-3 text-base font-semibold text-gray-900'>
             <span aria-hidden='true' className='absolute inset-0' />
-            {truncate(address_street, 18, true)}
+            {address_street}
           </h3>
           <div className='grid grid-cols-2 gap-x-8 gap-y-4'>
             <div className='flex w-full items-center justify-center gap-5 text-base text-gray-700'>

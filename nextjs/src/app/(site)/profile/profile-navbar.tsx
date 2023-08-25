@@ -15,8 +15,8 @@ const secondaryNavigation = [
   { name: 'General', href: '', icon: UserCircleIcon },
   { name: 'Matching Profile', href: '/matching-profile', icon: UsersIcon },
   { name: 'Notifications', href: '/notifications', icon: BellIcon },
-  { name: 'Plan', href: '#', icon: CubeIcon },
-  { name: 'Billing', href: '#', icon: CreditCardIcon },
+  { name: 'Plan', href: '/plan', icon: CubeIcon },
+  { name: 'Billing', href: '/billing', icon: CreditCardIcon },
 ]
 
 export default function ProfileNavbar() {
@@ -29,7 +29,7 @@ export default function ProfileNavbar() {
           {secondaryNavigation.map((item) => (
             <li key={item.name}>
               <Link
-                href={`/profile/${item.href}`}
+                href={`/profile${item.href}`}
                 className={classNames(
                   '/profile' + item.href === pathname
                     ? 'bg-gray-50 text-green-800'

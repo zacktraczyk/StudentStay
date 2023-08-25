@@ -9,18 +9,19 @@ import { z } from 'zod'
 
 const formSchema = z.object({
   fullName: z.string().min(1, 'Full name is required'),
+  pronouns: z.string().optional(),
 })
 
 type Profile = {
   full_name: string | null
+  pronouns: string | null
   avatar_url: string | null
 }
 
 type FormSchemaType = z.infer<typeof formSchema>
 
-export default function PersonalInformation({ profile: _profile }: { profile: Profile | null }) {
+export default function PersonalInformation({ profile }: { profile: Profile }) {
   const { supabase, session } = useSupabase()
-  const profile = _profile || { full_name: '', avatar_url: '' }
 
   const {
     register,
@@ -34,6 +35,7 @@ export default function PersonalInformation({ profile: _profile }: { profile: Pr
     let { error } = await supabase.from('profiles').upsert({
       profile_id: session?.user?.id as string,
       full_name: data.fullName || '',
+      pronouns: data.pronouns || '',
     })
 
     if (error) throw error
@@ -73,7 +75,7 @@ export default function PersonalInformation({ profile: _profile }: { profile: Pr
 
           <div className='col-span-full'>
             <label htmlFor='fullName' className='block text-sm font-medium leading-6 text-gray-900'>
-              New Password
+              Full Name*
             </label>
             <div className='relative mt-2 rounded-md shadow-sm'>
               <input
@@ -100,6 +102,40 @@ export default function PersonalInformation({ profile: _profile }: { profile: Pr
             {errors.fullName && (
               <p className='mt-2 text-sm text-red-600' id='email-error'>
                 {errors.fullName.message}
+              </p>
+            )}
+          </div>
+
+          <div className='col-span-full'>
+            <label htmlFor='pronouns' className='block text-sm font-medium leading-6 text-gray-900'>
+              Pronouns
+            </label>
+            <div className='relative mt-2 rounded-md shadow-sm'>
+              <input
+                type='text'
+                id='pronouns'
+                defaultValue={profile?.pronouns || ''}
+                placeholder='any, he/him, she/her, they/them, etc.'
+                className={classNames(
+                  errors.pronouns
+                    ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500'
+                    : '',
+                  'block w-full rounded-md border-0 px-3 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green-800 sm:text-sm sm:leading-6',
+                )}
+                aria-invalid={errors.pronouns ? 'true' : 'false'}
+                aria-describedby='password-error'
+                {...register('pronouns')}
+              />
+              {errors.pronouns && (
+                <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3'>
+                  <ExclamationCircleIcon className='h-5 w-5 text-red-500' aria-hidden='true' />
+                </div>
+              )}
+            </div>
+
+            {errors.pronouns && (
+              <p className='mt-2 text-sm text-red-600' id='email-error'>
+                {errors.pronouns.message}
               </p>
             )}
           </div>

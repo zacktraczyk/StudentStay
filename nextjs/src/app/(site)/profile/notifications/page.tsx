@@ -131,7 +131,7 @@ export default function Notifications() {
           </button>
           <button
             type='submit'
-            className='cursor-not-allowed rounded-md bg-green-800 px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
+            className='cursor-not-allowed rounded-md bg-green-800 px-10 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800'
             disabled
           >
             Save

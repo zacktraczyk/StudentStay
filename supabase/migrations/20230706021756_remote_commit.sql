@@ -2,11 +2,13 @@
 create table profiles (
   profile_id uuid references auth.users on delete cascade not null primary key,
   full_name text,
+  pronouns text,
   avatar_url text,
 
   instagram_profile text,
-  twitter_profile text,
   tictok_profile text,
+  snapchat_profile text,
+  facebook_profile text,
 
   updated_at timestamp with time zone
 );
