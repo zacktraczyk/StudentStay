@@ -303,7 +303,7 @@ function Slider(props: SliderProps) {
     <div className='flex w-full flex-col space-y-2 py-20'>
       <div className='flext'>
         {InputIcon && (
-          <div className='mr-4 flex-shrink-0'>
+          <div className='mr-4 shrink-0'>
             <InputIcon className='w-20' />
           </div>
         )}

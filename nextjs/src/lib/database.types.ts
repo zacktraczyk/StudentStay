@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
   public: {
@@ -72,11 +66,11 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "housing_preferences_profile_id_fkey"
-            columns: ["profile_id"]
-            referencedRelation: "profiles"
-            referencedColumns: ["profile_id"]
-          }
+            foreignKeyName: 'housing_preferences_profile_id_fkey'
+            columns: ['profile_id']
+            referencedRelation: 'profiles'
+            referencedColumns: ['profile_id']
+          },
         ]
       }
       listings: {
@@ -199,17 +193,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "profile_listing_interests_listing_id_fkey"
-            columns: ["listing_id"]
-            referencedRelation: "listings"
-            referencedColumns: ["listing_id"]
+            foreignKeyName: 'profile_listing_interests_listing_id_fkey'
+            columns: ['listing_id']
+            referencedRelation: 'listings'
+            referencedColumns: ['listing_id']
           },
           {
-            foreignKeyName: "profile_listing_interests_profile_id_fkey"
-            columns: ["profile_id"]
-            referencedRelation: "profiles"
-            referencedColumns: ["profile_id"]
-          }
+            foreignKeyName: 'profile_listing_interests_profile_id_fkey'
+            columns: ['profile_id']
+            referencedRelation: 'profiles'
+            referencedColumns: ['profile_id']
+          },
         ]
       }
       profiles: {
@@ -251,17 +245,17 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "profiles_profile_id_fkey"
-            columns: ["profile_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
+            foreignKeyName: 'profiles_profile_id_fkey'
+            columns: ['profile_id']
+            referencedRelation: 'users'
+            referencedColumns: ['id']
           },
           {
-            foreignKeyName: "profiles_school_id_fkey"
-            columns: ["school_id"]
-            referencedRelation: "schools"
-            referencedColumns: ["school_id"]
-          }
+            foreignKeyName: 'profiles_school_id_fkey'
+            columns: ['school_id']
+            referencedRelation: 'schools'
+            referencedColumns: ['school_id']
+          },
         ]
       }
       schools: {
@@ -347,4 +341,3 @@ export interface Database {
     }
   }
 }
-

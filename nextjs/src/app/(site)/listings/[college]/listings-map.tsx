@@ -133,7 +133,7 @@ export default function ListingsMap() {
     }
 
     getSchool()
-  }, [session?.user.id, supabase])
+  }, [session?.user.id, supabase, school_slug])
 
   return (
     <Map

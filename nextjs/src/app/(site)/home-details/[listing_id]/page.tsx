@@ -60,7 +60,7 @@ export default async function HomeDetails({
                   listing.additional_img_srcs.map((image, key) => (
                     <Tab
                       key={key}
-                      className='relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring focus:ring-opacity-50 focus:ring-offset-4'
+                      className='focus:ring/50 relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-offset-4'
                     >
                       {({ selected }) => (
                         <>
